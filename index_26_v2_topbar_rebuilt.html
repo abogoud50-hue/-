@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8f0df">
+<title>تحدّي العرب</title>
+
+<style>
+:root {
+  --cream: #fff8e9;
+  --paper: #fffdf7;
+  --ink: #243653;
+  --muted: #718096;
+  --gold: #f4bd48;
+  --gold-dark: #bd8121;
+  --blue: #168bd0;
+  --blue-dark: #1164a6;
+  --teal: #159b82;
+  --purple: #8653c8;
+  --red: #e6534e;
+  --line: #eadfc9;
+  --shadow: 0 7px 0 rgba(83, 60, 31, .12), 0 12px 24px rgba(75, 65, 43, .10);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 50% -10%, #fff 0, transparent 50%),
+    linear-gradient(180deg, #f8f0df 0%, #f7ead2 100%);
+  font-family: "Tahoma", "Arial", sans-serif;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(22,139,208,.35);
+  outline-offset: 2px;
+}
+
+button:active {
+  transform: translateY(2px);
+}
+
+svg {
+  display: block;
+}
+
+.game {
+  width: min(100%, 620px);
+  margin: auto;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255,250,239,.83), rgba(255,250,239,.94)),
+    repeating-linear-gradient(45deg, #e6d6b6 0 2px, transparent 2px 16px);
+  box-shadow: 0 0 35px #5e4a2712;
+  padding-bottom: 90px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 53px;
+  padding: 7px 10px 4px;
+  position: relative;
+  z-index: 20;
+  box-sizing: border-box;
+  direction: rtl;
+}
+
+/* بطاقة اللاعب — نفس الهوية البصرية */
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 170px;
+  height: 39px;
+  padding: 4px 7px;
+  box-sizing: border-box;
+  border: 2px solid #e9d9b9;
+  border-radius: 14px;
+  background: #263b57;
+  box-shadow: 0 3px 0 #c8b58f;
+  color: #fff;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  display: grid;
+  place-items: center;
+  color: #775018;
+  border: 1px solid #fff0bd;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffe99a, #e9a51c);
+}
+
+.profile-avatar svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
+.profile-text {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.profile-text strong {
+  display: block;
+  min-width: 0;
+  max-width: 90px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.profile-text small {
+  flex: 0 0 auto;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.xp-track {
+  display: none;
+}
+
+/* بطاقات العملات والمحاولات */
+.resource {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 39px;
+  min-width: 72px;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  border: 2px solid #e9d9b9;
+  border-radius: 14px;
+  background: #263b57;
+  box-shadow: 0 3px 0 #c8b58f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.resource-icon {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid #fff0bd;
+  background: linear-gradient(145deg, #ffe99a, #e9a51c);
+  color: #775018;
+}
+
+.resource-icon svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+.resource-value {
+  min-width: 21px;
+  text-align: center;
+  line-height: 1;
+}
+
+.resource-plus {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #7b4d14;
+  background: linear-gradient(#fff1bd, #f5c65b);
+  font-size: 16px;
+  line-height: 22px;
+  box-shadow: 0 2px 0 #c78d2b;
+  cursor: pointer;
+}
+
+.settings-top {
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border: 2px solid #e9d9b9;
+  border-radius: 14px;
+  color: #fff;
+  background: #293b55;
+  box-shadow: 0 3px 0 #c8b58f;
+  cursor: pointer;
+}
+
+.settings-top svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
+.resource button,
+.profile-chip,
+.settings-top {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    gap: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .profile-chip {
+    max-width: none;
+  }
+
+  .resource {
+    min-width: 64px;
+    gap: 3px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .resource-plus {
+    display: none;
+  }
+}
+
+.screen {
+  display: none;
+  padding: 10px 13px 20px;
+  animation: screenIn .22s ease-out;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+  position: relative;
+  margin: 9px 0 17px;
+  min-height: 205px;
+  padding: 19px 18px;
+  overflow: hidden;
+  border: 2px solid #e8c979;
+  border-radius: 25px;
+  background:
+    radial-gradient(circle at 90% 15%, #fff3c5 0 6%, transparent 7%),
+    linear-gradient(145deg, #fff1c9, #ffe0a0 55%, #f9c96c);
+  box-shadow: var(--shadow);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  bottom: -57px;
+  width: 190px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.24);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 72%;
+}
+
+.hero-kicker {
+  display: inline-block;
+  color: #97621d;
+  font-size: 11px;
+  font-weight: bold;
+  background: #fff8e5;
+  border: 1px solid #f3d68e;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin-bottom: 9px;
+}
+
+.hero h1 {
+  font-size: clamp(23px, 6vw, 31px);
+  line-height: 1.35;
+  margin: 0 0 8px;
+  color: #243653;
+  text-shadow: 0 2px #fff8e8;
+}
+
+.hero p {
+  color: #6d5939;
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0 0 14px;
+}
+
+.hero-art {
+  position: absolute;
+  left: 3px;
+  bottom: 2px;
+  width: 30%;
+  height: 88%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hero-art svg {
+  width: 100%;
+  height: 100%;
+  max-height: 190px;
+}
+
+/* الهوية الرئيسية: شعار مستقل وليس زرًا */
+.brand-plaque {
+  width: fit-content;
+  max-width: 100%;
+  margin: 4px auto 10px;
+  padding: 2px 14px;
+  text-align: center;
+  position: relative;
+}
+
+.brand-plaque::before,
+.brand-plaque::after {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-55%);
+  color: #d39b30;
+  font-size: 14px;
+}
+.brand-plaque::before { right: 0; }
+.brand-plaque::after { left: 0; }
+
+.brand-plaque h2 {
+  margin: 0;
+  font-size: clamp(25px, 7vw, 33px);
+  font-weight: 900;
+  letter-spacing: -.8px;
+  color: #243653;
+  text-shadow: 0 2px #fff8e8;
+}
+.brand-plaque p {
+  margin: 1px 0 0;
+  font-size: 9px;
+  color: #a07128;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.mentor-welcome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 2px 13px;
+  padding: 4px 4px 8px;
+}
+.mentor-welcome .mentor-art {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  display: grid;
+  place-items: center;
+}
+.mentor-welcome .mentor-art svg {
+  width: 76px;
+  height: 76px;
+}
+.mentor-copy {
+  min-width: 0;
+}
+.mentor-copy h1 {
+  margin: 0;
+  font-size: clamp(19px, 5vw, 25px);
+  line-height: 1.35;
+  color: #243653;
+}
+.mentor-copy p {
+  margin: 4px 0 0;
+  color: #7c6d57;
+  font-size: 11px;
+}
+
+.welcome-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(rgba(255,250,239,.98), rgba(255,246,225,.99));
+}
+.welcome-screen.hidden { display: none; }
+.welcome-inner {
+  width: min(100%, 390px);
+  text-align: center;
+}
+.welcome-logo {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 42px;
+  padding: 0 24px;
+}
+.welcome-logo::before, .welcome-logo::after {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #d39b30;
+  font-size: 18px;
+}
+.welcome-logo::before { right: 0; }
+.welcome-logo::after { left: 0; }
+.welcome-logo strong {
+  display: block;
+  font-size: clamp(34px, 10vw, 48px);
+  line-height: 1;
+  letter-spacing: -1.5px;
+  color: #243653;
+  text-shadow: 0 3px #fff;
+}
+.welcome-logo span {
+  display: block;
+  margin-top: 8px;
+  color: #a07128;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.welcome-start {
+  width: min(100%, 220px);
+  min-height: 50px;
+  margin: 70px auto 0;
+  border: 2px solid #fff1c6;
+  border-radius: 16px;
+  color: #704b13;
+  font-weight: 900;
+  font-size: 16px;
+  background: linear-gradient(180deg, #ffe99e, #f2bd4c);
+  box-shadow: 0 5px 0 #bd862c, 0 10px 20px #88612218;
+}
+.customer-button {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 12px;
+  border: 2px solid #e9d9b9;
+  border-radius: 12px;
+  background: #fffdf7;
+  color: #4c5b70;
+  padding: 7px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #d7c5a4;
+}
+
+@media (max-width: 390px) {
+  .mentor-welcome { gap: 9px; margin-bottom: 9px; }
+  .mentor-welcome .mentor-art { width: 66px; height: 66px; flex-basis: 66px; }
+  .mentor-welcome .mentor-art svg { width: 66px; height: 66px; }
+  .mentor-copy h1 { font-size: 18px; }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 19px 3px 11px;
+}
+
+.section-title h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.section-title span {
+  color: #927c59;
+  font-size: 11px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mode-card {
+  --mode: #168bd0;
+  --mode-dark: #1164a6;
+  position: relative;
+  min-width: 0;
+  min-height: 142px;
+  overflow: hidden;
+  border: 2px solid #fff9ed;
+  border-radius: 22px;
+  padding: 0;
+  text-align: right;
+  color: white;
+  background: var(--mode);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--mode-dark) 65%, #5c4b39),
+              0 8px 14px #6a51241c;
+}
+
+.mode-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 43% 0;
+  background: linear-gradient(145deg, rgba(255,255,255,.22), transparent);
+}
+
+.mode-card::after {
+  content: "";
+  position: absolute;
+  left: -19px;
+  top: -25px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.09);
+}
+
+.mode-card.blue { --mode: #168bd0; --mode-dark: #0c609e; }
+.mode-card.gold { --mode: #efa928; --mode-dark: #b97717; }
+.mode-card.purple { --mode: #9161d4; --mode-dark: #63409d; }
+.mode-card.green { --mode: #159d81; --mode-dark: #0b6f5b; }
+.mode-card.red { --mode: #e85c56; --mode-dark: #ad3735; }
+
+.card-art {
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,.10);
+}
+
+.card-art svg {
+  width: 72px;
+  height: 62px;
+  filter: drop-shadow(0 3px 1px #14243c33);
+}
+
+.card-info {
+  position: relative;
+  z-index: 1;
+  padding: 9px 11px 12px;
+  background: var(--mode-dark);
+  min-height: 76px;
+}
+
+.card-info h4 {
+  margin: 0 0 5px;
+  font-size: 15px;
+}
+
+.card-info p {
+  margin: 0;
+  color: rgba(255,255,255,.87);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.card-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 9px;
+  min-width: 100px;
+  padding: 7px 13px;
+  color: #6e4b18;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #fff1c9;
+  border-radius: 20px;
+  background: linear-gradient(#fff5d3, #f4c65e);
+  box-shadow: 0 3px 0 #bc862c;
+}
+
+.card-start svg {
+  width: 15px;
+  height: 15px;
+}
+
+.feature-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 17px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fffdf7;
+  border: 2px solid #ead9b9;
+  border-radius: 17px;
+  padding: 11px;
+  box-shadow: 0 3px 0 #ddc9a5;
+  text-align: right;
+  color: var(--ink);
+}
+
+.feature-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff0c5;
+  color: #a66d19;
+}
+
+.feature-icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.feature strong {
+  display: block;
+  font-size: 12px;
+}
+
+.feature small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.coming-banner {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 2px solid #ead8b6;
+  border-radius: 18px;
+  background: #fffaf0;
+  color: #826b48;
+  box-shadow: 0 4px 0 #decaab;
+}
+
+.coming-banner svg {
+  width: 23px;
+  height: 23px;
+}
+
+.coming-banner strong {
+  font-size: 13px;
+}
+
+.coming-banner small {
+  display: block;
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.bottom-nav {
+  position: fixed;
+  z-index: 10;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 620px);
+  min-height: 75px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: end;
+  padding: 7px 8px max(8px, env(safe-area-inset-bottom));
+  background: rgba(255,251,241,.97);
+  border: 2px solid #e9d9bb;
+  border-bottom: 0;
+  border-radius: 25px 25px 0 0;
+  box-shadow: 0 -5px 20px #5e4b2412;
+  backdrop-filter: blur(12px);
+}
+
+.nav-button {
+  min-width: 0;
+  height: 58px;
+  border: 0;
+  background: transparent;
+  color: #7d6c55;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 15px;
+}
+
+.nav-button svg {
+  width: 23px;
+  height: 23px;
+}
+
+.nav-button.active {
+  color: #fff;
+  background: #169f9a;
+  border: 3px solid #e2c56f;
+  box-shadow: 0 4px 0 #0c6f75;
+  height: 67px;
+  transform: translateY(-7px);
+}
+
+/* الشاشات الداخلية */
+.back-button {
+  border: 2px solid #e6d4b2;
+  background: #fffaf0;
+  color: #6d5b40;
+  border-radius: 14px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 3px 0 #d9c5a1;
+  margin-bottom: 16px;
+}
+
+.page-heading {
+  margin: 0 0 7px;
+  font-size: 24px;
+  color: #263a56;
+}
+
+.page-subtitle {
+  margin: 0 0 19px;
+  color: #7c6d57;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.panel {
+  background: #fffdf7;
+  border: 2px solid #ead9b9;
+  border-radius: 22px;
+  padding: 17px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 0 #ddc9a5;
+}
+
+.panel-title {
+  margin: 0 0 15px;
+  font-size: 16px;
+}
+
+.field {
+  margin-bottom: 9px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: #77664d;
+  font-weight: bold;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 2px solid #e5d7bd;
+  background: #fffaf0;
+  border-radius: 11px;
+  color: #263a56;
+  padding: 9px 10px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #38b6ac;
+}
+
+.primary-button {
+  width: 100%;
+  min-height: 44px;
+  border: 2px solid #fff1c6;
+  border-radius: 16px;
+  color: #704b13;
+  font-weight: 900;
+  background: linear-gradient(180deg, #ffe99e, #f2bd4c);
+  box-shadow: 0 4px 0 #bd862c, 0 7px 13px #88612216;
+}
+
+.secondary-button {
+  width: 100%;
+  min-height: 40px;
+  border: 2px solid #e4d4b5;
+  border-radius: 15px;
+  color: #65543c;
+  background: #fffaf0;
+  font-weight: bold;
+  box-shadow: 0 3px 0 #d8c5a4;
+}
+
+
+.danger-panel { border-color: #f0c8c5; }
+.danger-button {
+  border: 2px solid #f0b5b1;
+  border-radius: 13px;
+  min-height: 38px;
+  padding: 7px 11px;
+  color: #a83f3a;
+  background: #fff5f4;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #e5b4af;
+}
+.mentor-option { min-height: 54px; }
+
+.notice {
+  border: 2px solid #b7e6dd;
+  background: #e9faf5;
+  color: #276c62;
+  border-radius: 15px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 12px 0;
+}
+
+.country-vs {
+  text-align: center;
+  color: #c18a2a;
+  font-weight: 900;
+  margin: 4px 0 12px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eee2cc;
+}
+
+.settings-row:last-child {
+  border-bottom: 0;
+}
+
+.setting-copy strong {
+  display: block;
+  font-size: 13px;
+  color: #344761;
+}
+
+.setting-copy small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #8a7a63;
+  margin-top: 4px;
+}
+
+.switch {
+  width: 49px;
+  height: 28px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  background: #c7c9ca;
+  border: 2px solid #b2b5b7;
+  transition: .2s;
+}
+
+.switch-track::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px #0002;
+  transition: .2s;
+}
+
+.switch input:checked + .switch-track {
+  background: #35b8a4;
+  border-color: #219a8a;
+}
+
+.switch input:checked + .switch-track::before {
+  transform: translateX(-21px);
+}
+
+.volume-setting {
+  width: 100%;
+  accent-color: #20a99c;
+  margin-top: 10px;
+}
+
+.settings-select {
+  max-width: 135px;
+  border: 2px solid #e6d7bd;
+  border-radius: 12px;
+  background: #fffaf0;
+  color: #394b63;
+  padding: 9px;
+  font-size: 12px;
+}
+
+.subtle {
+  color: #8a7a63;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* نافذة إنشاء الملف الشخصي */
+.modal-backdrop {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(37, 49, 65, .56);
+  backdrop-filter: blur(5px);
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal {
+  width: min(100%, 320px);
+  max-height: 78dvh;
+  overflow-y: auto;
+  padding: 12px;
+  border: 2px solid #e7c778;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fffdf7, #fff5df);
+  box-shadow: 0 10px 0 #b98b3c, 0 25px 60px #18253c55;
+  animation: modalIn .25s ease-out;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-emblem {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 6px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #e4bd5e;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #ffe9a7, #f2bd4e);
+  color: #80591c;
+}
+
+.modal-emblem svg {
+  width: 23px;
+  height: 23px;
+}
+
+.modal h2 {
+  text-align: center;
+  margin: 0 0 5px;
+  font-size: 17px;
+}
+
+.modal-intro {
+  text-align: center;
+  color: #817055;
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0 0 9px;
+}
+
+.gender-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 6px 0 10px;
+}
+
+.gender-option {
+  position: relative;
+  border: 2px solid #e5d6bb;
+  border-radius: 13px;
+  background: #fffaf0;
+  color: #5f6a7a;
+  padding: 6px 7px;
+  font-weight: bold;
+}
+
+.gender-option svg {
+  width: 24px;
+  height: 24px;
+  margin: 0 auto 3px;
+}
+
+.gender-option.selected {
+  border-color: #21a99d;
+  background: #e8faf5;
+  color: #187b70;
+  box-shadow: 0 3px 0 #a5dcd3;
+}
+
+.form-error {
+  display: none;
+  color: #b83a36;
+  font-size: 12px;
+  margin: 0 0 12px;
+}
+
+.form-error.show {
+  display: block;
+}
+
+.toast {
+  position: fixed;
+  z-index: 50;
+  bottom: 92px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  opacity: 0;
+  pointer-events: none;
+  width: max-content;
+  max-width: calc(100% - 30px);
+  padding: 12px 18px;
+  border: 2px solid #d4c29f;
+  border-radius: 15px;
+  color: #fff;
+  background: #293d58;
+  box-shadow: 0 5px 0 #192b42;
+  font-size: 12px;
+  text-align: center;
+  transition: .2s;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 23px 12px;
+}
+
+.empty-state svg {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 12px;
+  color: #d09a36;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #82745e;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+@media (max-width: 390px) {
+  .topbar { gap: 5px; padding-inline: 8px; }
+  .profile-chip { padding: 4px 5px; gap: 5px; }
+  .profile-avatar { width: 35px; height: 35px; }
+  .resource { padding: 3px 4px; gap: 3px; }
+  .resource-icon { width: 24px; height: 24px; }
+  .resource-value { font-size: 11px; }
+  .settings-top { width: 36px; height: 36px; }
+  .screen { padding-inline: 10px; }
+  .mode-grid { gap: 9px; }
+  .mode-card { min-height: 145px; }
+  .card-info h4 { font-size: 13px; }
+  .card-info p { font-size: 10px; }
+}
+
+@media (min-width: 540px) {
+  .hero { min-height: 230px; padding: 24px; }
+  .hero-copy { max-width: 67%; }
+  .hero-art { width: 32%; }
+  .mode-card { min-height: 175px; }
+  .card-art { height: 88px; }
+  .card-art svg { width: 82px; height: 72px; }
+  .card-info { padding: 12px 14px 15px; }
+}
+
+/* ضبط واجهة الجوال والنوافذ المنبثقة */
+@media (max-width: 600px) {
+  .welcome-start { margin-top: 86px; }
+  .welcome-logo { margin-bottom: 0; }
+  .profile-chip { max-width: 155px; gap: 5px; }
+  .profile-text { justify-content: center; align-items: center; }
+  .profile-text strong { max-width: 78px; }
+  .modal-backdrop { align-items: flex-start; padding: 8px; }
+  .modal { width: min(100%, 320px); max-height: calc(var(--app-vh, 100dvh) - 16px); }
+  #profile-modal .modal { padding: 10px; }
+  #profile-modal .modal-emblem { width: 36px; height: 36px; margin-bottom: 4px; }
+  #profile-modal .modal h2 { font-size: 16px; margin-bottom: 3px; }
+  #profile-modal .modal-intro { margin-bottom: 7px; }
+  #profile-modal .field { margin-bottom: 7px; }
+  #profile-modal .gender-options { margin-top: 4px; margin-bottom: 7px; }
+  #profile-modal .primary-button { min-height: 40px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- رسومات SVG أصلية للأيقونات -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gear" viewBox="0 0 24 24">
+    <path d="M9.7 2h4.6l.6 2.3a8 8 0 0 1 1.7 1l2.3-.7 2.3 4-1.7 1.7a8 8 0 0 1 0 2l1.7 1.7-2.3 4-2.3-.7a8 8 0 0 1-1.7 1l-.6 2.4H9.7l-.6-2.4a8 8 0 0 1-1.7-1l-2.3.7-2.3-4 1.7-1.7a8 8 0 0 1 0-2L2.8 8.6l2.3-4 2.3.7a8 8 0 0 1 1.7-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    <circle cx="12" cy="11.9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  </symbol>
+
+  <symbol id="i-coin" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="currentColor" opacity=".18"/>
+    <circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M14.7 8.5c-.6-.7-1.5-1-2.6-1-1.8 0-3 1-3 2.3 0 3.6 5.8 1.2 5.8 4 0 1.3-1.2 2.4-3.1 2.4-1.3 0-2.5-.5-3.2-1.4M12 5.8v12.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-heart" viewBox="0 0 24 24">
+    <path d="M20.7 5.9c-2.2-3-6.5-2.6-8.7.4-2.2-3-6.5-3.4-8.7-.4-3.8 5.1 3.8 11.4 8.7 15 4.9-3.6 12.5-9.9 8.7-15z" fill="currentColor" stroke="#fff" stroke-width="1.2"/>
+  </symbol>
+
+  <symbol id="i-home" viewBox="0 0 24 24">
+    <path d="M3 10.5 12 3l9 7.5v10H5v-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+
+  <symbol id="i-trophy" viewBox="0 0 24 24">
+    <path d="M7 3h10v4c0 4-2 6-5 6S7 11 7 7zM7 5H3v3c0 3 2 4 5 4M17 5h4v3c0 3-2 4-5 4M12 13v5m-5 3h10m-8-3h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-shop" viewBox="0 0 24 24">
+    <path d="M4 9h16v12H4zM2.5 9l2-6h15l2 6M2.5 9c0 2 3 3 4.5 0 1.5 3 4.5 3 5 0 1 3 4 3 5 0 1.5 3 4.5 2 4.5 0M9 21v-7h6v7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-task" viewBox="0 0 24 24">
+    <rect x="5" y="4" width="15" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M9 4V2h7v4H9zM8 11h8M8 15h8M8 18h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-level" viewBox="0 0 24 24">
+    <path d="M3 20h18M5 18V9h4v9M11 18V4h4v14M17 18v-6h4v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-compare" viewBox="0 0 24 24">
+    <rect x="2.5" y="5" width="8" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    <rect x="13.5" y="5" width="8" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    <path d="M8 9h8m-3-3 3 3-3 3M16 14H8m3-3-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-map" viewBox="0 0 24 24">
+    <path d="m2.5 5 6-2.5 7 2.5 6-2v16l-6 2-7-2.5-6 2zM8.5 2.5V19M15.5 5v16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="M12 8c-2.2 0-3.5 1.5-3.5 3.2 0 2.1 3.5 5.3 3.5 5.3s3.5-3.2 3.5-5.3C15.5 9.5 14.2 8 12 8z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  </symbol>
+
+  <symbol id="i-search" viewBox="0 0 24 24">
+    <circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+    <path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-brain" viewBox="0 0 24 24">
+    <path d="M12 4.5a3.5 3.5 0 0 0-6.5 1.8 3.5 3.5 0 0 0-1 6.4A3.7 3.7 0 0 0 8 19h4zM12 4.5a3.5 3.5 0 0 1 6.5 1.8 3.5 3.5 0 0 1 1 6.4A3.7 3.7 0 0 1 16 19h-4zM12 5v15M7 9c2 0 3 1 3 3m7-3c-2 0-3 1-3 3M7 15c1.5 0 2.5 1 2.5 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-food" viewBox="0 0 24 24">
+    <path d="M3 11h18a9 9 0 0 1-18 0zM2 11h20M6 6l2-2m3 2 2-3m3 3 2-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M7 14h.1m4 2h.1m4-3h.1" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-arrow" viewBox="0 0 24 24">
+    <path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-star" viewBox="0 0 24 24">
+    <path d="m12 2.5 2.9 6 6.6 1-4.8 4.7 1.1 6.7-5.8-3.2-5.8 3.2 1.1-6.7-4.8-4.7 6.6-1z" fill="currentColor" stroke="currentColor" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-person" viewBox="0 0 24 24">
+    <circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M4 21v-2a8 8 0 0 1 16 0v2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+  </symbol>
+
+  <symbol id="i-calendar" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M7 3v4m10-4v4M3 10h18M7 14h3m4 0h3m-10 3h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-lock" viewBox="0 0 24 24">
+    <rect x="4" y="10" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="i-support" viewBox="0 0 24 24">
+    <path d="M4 13a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M4 13v4a2 2 0 0 0 2 2h2v-6H6a2 2 0 0 0-2 2zm16 0v4a2 2 0 0 1-2 2h-2v-6h2a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M14 20h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<div class="welcome-screen" id="welcome-screen">
+  <button class="customer-button" onclick="showCustomerSupport()"><svg style="display:inline-block;width:14px;height:14px;vertical-align:middle;margin-left:4px"><use href="#i-support"/></svg>خدمة العملاء</button>
+  <div class="welcome-inner">
+    <div class="welcome-logo"><strong>تحدّي العرب</strong><span>اكتشف · قارن · خمّن</span></div>
+    <button class="welcome-start" onclick="startGameEntry()">ابدأ</button>
+  </div>
+</div>
+
+<div class="game">
+
+  <!-- الشريط العلوي -->
+  <header class="topbar" aria-label="الشريط العلوي">
+    <button class="profile-chip" type="button" onclick="showScreen('settings')" aria-label="الملف الشخصي">
+      <div class="profile-avatar" id="profile-avatar">
+        <svg aria-hidden="true"><use href="#i-person"/></svg>
+      </div>
+      <div class="profile-text">
+        <strong id="profile-name">مرحبًا!</strong>
+        <small><span id="profile-level">المستوى 1</span></small>
+        <div class="xp-track"><div class="xp-fill"></div></div>
+      </div>
+    </button>
+
+    <div class="resource" title="الكوينز">
+      <span class="resource-icon" aria-hidden="true">
+        <svg><use href="#i-coin"/></svg>
+      </span>
+      <span class="resource-value" id="coin-count">120</span>
+      <button class="resource-plus" type="button" onclick="openShop()" aria-label="المتجر">+</button>
+    </div>
+
+    <div class="resource" title="المحاولات">
+      <span class="resource-icon" aria-hidden="true">
+        <svg><use href="#i-heart"/></svg>
+      </span>
+      <span class="resource-value" id="life-count">5</span>
+      <button class="resource-plus" type="button" onclick="showToast('سنضيف نظام استعادة المحاولات لاحقًا.')" aria-label="المحاولات">+</button>
+    </div>
+
+    <button class="settings-top" type="button" onclick="showScreen('settings')" aria-label="الإعدادات">
+      <svg aria-hidden="true"><use href="#i-gear"/></svg>
+    </button>
+  </header>
+
+  <!-- الرئيسية -->
+  <main id="home" class="screen active">
+
+    <div class="brand-plaque">
+      <h2>تحدّي العرب</h2>
+      <p>اكتشف · قارن · خمّن</p>
+    </div>
+
+    <section class="mentor-welcome">
+      <div class="mentor-art" id="mentor-art" aria-hidden="true"></div>
+      <div class="mentor-copy">
+        <h1 id="hero-greeting">أهلًا بك!</h1>
+        <p>استعد للتحدّي واختبر معلوماتك.</p>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <h3>اختر نمط اللعب</h3>
+      
+    </div>
+
+    <div class="mode-grid">
+
+      <button class="mode-card blue" onclick="startRandomComparison()">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <path d="M11 12h27l9 12-9 30H11z" fill="#1d4c79" stroke="#fff" stroke-width="2"/>
+            <path d="M52 12h27v42H52l-9-30z" fill="#fff" stroke="#e8e9ed" stroke-width="2"/>
+            <path d="M12 27h25v10H12z" fill="#d94a43"/>
+            <path d="M53 24h25v9H53z" fill="#d94a43"/>
+            <path d="M45 22l5 10 11 1-8 7 2 11-10-6-10 6 2-11-8-7 11-1z" fill="#ffd66d" stroke="#fff1bd" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>مقارنة عشوائية</h4>
+          <p>دولتان عربيتان يختارهما النظام لك.</p>
+          <span class="card-start">ابدأ <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+      <button class="mode-card gold" onclick="showScreen('custom')">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <path d="M8 20 45 7l37 13-4 34-33 10L12 51z" fill="#fff1c4" stroke="#fff" stroke-width="2"/>
+            <path d="M18 25 45 15l27 10-2 23-25 8-25-8z" fill="#e6c36b"/>
+            <path d="M25 28 45 21l20 7-20 9z" fill="#a5c9a0"/>
+            <path d="M45 37v19" stroke="#94703a" stroke-width="2"/>
+            <path d="M23 42h44" stroke="#94703a" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <path d="M26 8v23m-5-8 5 8 5-8M64 8v23m-5-8 5 8 5-8" fill="none" stroke="#9a6a1e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>مقارنة مخصصة</h4>
+          <p>اختر دولتين بنفسك وابدأ التحدّي.</p>
+          <span class="card-start">اختر الدولتين <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+      <button class="mode-card purple" onclick="showScreen('guess-country')">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <path d="M10 18 28 8l14 7 12-4 12 9 13-3 2 25-19 15-17-5-12 7-16-12z" fill="#bca1e9" stroke="#fff" stroke-width="2"/>
+            <circle cx="43" cy="34" r="19" fill="#f8f5ff" stroke="#fff" stroke-width="3"/>
+            <circle cx="43" cy="34" r="13" fill="none" stroke="#8d68ce" stroke-width="4"/>
+            <path d="m57 48 15 14" stroke="#f7d87e" stroke-width="8" stroke-linecap="round"/>
+            <path d="m57 48 15 14" stroke="#fff1c0" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>خمن الدولة</h4>
+          <p>اقرأ التلميحات واكتشف الدولة المقصودة.</p>
+          <span class="card-start">ابدأ <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+      <button class="mode-card green" onclick="showScreen('random-info')">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <path d="M45 8c-12-10-29 1-26 15-13 4-12 22 1 26 0 14 16 19 25 8 9 11 25 6 25-8 13-4 14-22 1-26C74 9 57-2 45 8z" fill="#9be0bd" stroke="#e4fff0" stroke-width="3"/>
+            <path d="M45 11v48M29 22c10 0 16 7 16 15M61 22c-10 0-16 7-16 15M29 43c8 0 13 5 13 12M61 43c-8 0-13 5-13 12" fill="none" stroke="#248d72" stroke-width="3" stroke-linecap="round"/>
+            <path d="M45 4v-3" stroke="#ffda6c" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>معلومات عشوائية</h4>
+          <p>أسئلة متنوعة من جميع الدول العربية.</p>
+          <span class="card-start">ابدأ <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+      <button class="mode-card red" onclick="showScreen('guess-food')">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <ellipse cx="45" cy="48" rx="37" ry="15" fill="#a73c36" opacity=".5"/>
+            <ellipse cx="45" cy="40" rx="37" ry="19" fill="#fff4dc" stroke="#fff" stroke-width="3"/>
+            <ellipse cx="45" cy="39" rx="29" ry="13" fill="#dba64e"/>
+            <path d="M22 37c7-8 13-7 19 0s11 7 17-1 9-5 13 0" fill="none" stroke="#fff0a8" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="32" cy="34" r="6" fill="#a84a35"/>
+            <circle cx="51" cy="43" r="7" fill="#9a452f"/>
+            <path d="m56 27 6-8m-4 12 9-4m-36 4-6-7" stroke="#63a66a" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>خمن الطبق</h4>
+          <p>تعرّف على الأطباق الشهيرة في عالمنا العربي.</p>
+          <span class="card-start">ابدأ <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+      <button class="mode-card blue" onclick="showScreen('coming-soon')">
+        <div class="card-art">
+          <svg viewBox="0 0 90 70">
+            <path d="m45 5 12 24 27 4-20 18 5 15-24-13-24 13 5-15L6 33l27-4z" fill="#ffe28c" stroke="#fff6d4" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="45" cy="35" r="13" fill="#f4b946"/>
+            <path d="m39 35 4 4 8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="card-info">
+          <h4>تحديات قادمة</h4>
+          <p>مساحات جديدة لمغامراتنا القادمة.</p>
+          <span class="card-start">قريبًا <svg><use href="#i-arrow"/></svg></span>
+        </div>
+      </button>
+
+    </div>
+
+  </main>
+
+  <!-- أنماط اللعب -->
+  <section id="modes" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">أنماط اللعب</h2>
+    <p class="page-subtitle">اختر نوع المغامرة التي تريد خوضها.</p>
+    <div class="mode-grid">
+      <button class="mode-card blue" onclick="startRandomComparison()">
+        <div class="card-art"><svg><use href="#i-compare"/></svg></div>
+        <div class="card-info"><h4>مقارنة عشوائية</h4><p>النظام يختار دولتين لك.</p><span class="card-start">ابدأ</span></div>
+      </button>
+      <button class="mode-card gold" onclick="showScreen('custom')">
+        <div class="card-art"><svg><use href="#i-map"/></svg></div>
+        <div class="card-info"><h4>مقارنة مخصصة</h4><p>اختر الدولتين بنفسك.</p><span class="card-start">ابدأ</span></div>
+      </button>
+      <button class="mode-card purple" onclick="showScreen('guess-country')">
+        <div class="card-art"><svg><use href="#i-search"/></svg></div>
+        <div class="card-info"><h4>خمن الدولة</h4><p>اكتشف الدولة من التلميحات.</p><span class="card-start">ابدأ</span></div>
+      </button>
+      <button class="mode-card green" onclick="showScreen('random-info')">
+        <div class="card-art"><svg><use href="#i-brain"/></svg></div>
+        <div class="card-info"><h4>معلومات عشوائية</h4><p>أسئلة من الوطن العربي.</p><span class="card-start">ابدأ</span></div>
+      </button>
+      <button class="mode-card red" onclick="showScreen('guess-food')">
+        <div class="card-art"><svg><use href="#i-food"/></svg></div>
+        <div class="card-info"><h4>خمن الطبق</h4><p>اختبر معرفتك بالأطباق.</p><span class="card-start">ابدأ</span></div>
+      </button>
+    </div>
+  </section>
+
+  <!-- المقارنة المخصصة -->
+  <section id="custom" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">مقارنة مخصصة</h2>
+    <p class="page-subtitle">أنت من يقرر المواجهة! اختر دولتين مختلفتين لبدء الجولة.</p>
+
+    <div class="panel">
+      <h3 class="panel-title">اختر الدولتين</h3>
+      <div class="field">
+        <label for="country1">الدولة الأولى</label>
+        <select id="country1"></select>
+      </div>
+      <div class="country-vs">مقابل</div>
+      <div class="field">
+        <label for="country2">الدولة الثانية</label>
+        <select id="country2"></select>
+      </div>
+      <div id="same-country-warning" class="notice" style="display:none">
+        اختر دولتين مختلفتين حتى تبدأ المقارنة.
+      </div>
+      <button class="primary-button" onclick="startCustomComparison()">تأكيد الاختيار</button>
+    </div>
+  </section>
+
+  <!-- تعليمات المقارنة -->
+  <section id="instructions" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel">
+      <h2 class="page-heading">استعد للتحدّي!</h2>
+      <p class="page-subtitle" id="comparison-names"></p>
+      <div class="notice">
+        لكل سؤال 10 ثوانٍ للإجابة. اختر إجابتك قبل انتهاء الوقت، واجمع النقاط لتتقدم في المستويات.
+      </div>
+      <p class="subtle">في حال الإجابة الخاطئة، ستعود إلى بداية المستوى الحالي. ستظهر تفاصيل المحاولات والمكافآت عندما نبرمج نظام اللعب.</p>
+      <button class="primary-button" onclick="beginComparison()">فهمت، ابدأ!</button>
+    </div>
+  </section>
+
+  <section id="comparison-ready" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel empty-state">
+      <svg><use href="#i-compare"/></svg>
+      <h3>تم اختيار المقارنة</h3>
+      <p id="ready-names"></p>
+      <p>الخطوة التالية هي بناء شاشة الأسئلة والمؤقت ونظام المستويات.</p>
+      <button class="primary-button" style="margin-top:16px" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- أقسام ستبرمج لاحقًا -->
+  <section id="guess-country" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel empty-state">
+      <svg><use href="#i-search"/></svg>
+      <h2 class="page-heading">خمن الدولة</h2>
+      <p>سيظهر هنا لغز الدولة مع التلميحات والخيارات ونظام النقاط.</p>
+    </div>
+  </section>
+
+  <section id="random-info" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel empty-state">
+      <svg><use href="#i-brain"/></svg>
+      <h2 class="page-heading">معلومات عشوائية</h2>
+      <p>سيضم هذا النمط أسئلة متنوعة عن الدول العربية وتاريخها وجغرافيتها وثقافتها.</p>
+    </div>
+  </section>
+
+  <section id="guess-food" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel empty-state">
+      <svg><use href="#i-food"/></svg>
+      <h2 class="page-heading">خمن الطبق</h2>
+      <p>سيظهر هنا طبق مصوّر مع خيارات لتخمين اسمه أو البلد المرتبط به.</p>
+    </div>
+  </section>
+
+  <section id="coming-soon" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <div class="panel empty-state">
+      <svg><use href="#i-star"/></svg>
+      <h2 class="page-heading">مغامرات قادمة</h2>
+      <p>سنضيف أنماطًا ومراحل جديدة إلى اللعبة تدريجيًا.</p>
+    </div>
+  </section>
+
+  <!-- المهام -->
+  <section id="tasks" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">المهام</h2>
+    <p class="page-subtitle">أهداف صغيرة تساعدك على التقدم في رحلتك.</p>
+    <div class="panel empty-state">
+      <svg><use href="#i-task"/></svg>
+      <h3>المهام ستصل قريبًا</h3>
+      <p>سنضيف مهام يومية وأسبوعية ومكافآت عند إكمالها.</p>
+    </div>
+  </section>
+
+  <!-- الإنجازات -->
+  <section id="achievements" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">الإنجازات</h2>
+    <p class="page-subtitle">مكان مخصص لأوسمتك ومحطات تقدمك.</p>
+    <div class="panel empty-state">
+      <svg><use href="#i-trophy"/></svg>
+      <h3>سجل إنجازاتك قادم</h3>
+      <p>سنربط الإنجازات بالتقدم الفعلي داخل أنماط اللعب.</p>
+    </div>
+  </section>
+
+  <!-- المتجر -->
+  <section id="shop" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">المتجر</h2>
+    <p class="page-subtitle">سيكون المتجر جزءًا من تجربة اللعبة، وليس مجرد صفحة شراء.</p>
+    <div class="panel">
+      <h3 class="panel-title">أفكار قيد التجهيز</h3>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>حزم الكوينز</strong>
+          <small>لاستخدامها في إعادة المحاولة أو ميزات داخل اللعبة.</small>
+        </div>
+        <span class="feature-icon"><svg><use href="#i-coin"/></svg></span>
+      </div>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>مظاهر للشخصيات</strong>
+          <small>خيارات شكلية يمكن فتحها لاحقًا.</small>
+        </div>
+        <span class="feature-icon"><svg><use href="#i-person"/></svg></span>
+      </div>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>مساعدات داخل التحديات</strong>
+          <small>مثل حذف خيار أو الحصول على تلميح، بعد تصميم توازن اللعب.</small>
+        </div>
+        <span class="feature-icon"><svg><use href="#i-star"/></svg></span>
+      </div>
+      <div class="notice">هذه أفكار أولية فقط. لا توجد عمليات شراء أو إعلانات فعلية في هذه النسخة.</div>
+    </div>
+  </section>
+
+  <!-- المستوى -->
+  <section id="level" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">المستوى</h2>
+    <p class="page-subtitle">تقدم اللاعب ومستوياته سيظهران هنا.</p>
+    <div class="panel empty-state">
+      <svg><use href="#i-level"/></svg>
+      <h3>رحلتك في المستوى الأول</h3>
+      <p>سيُربط شريط التقدم والأسئلة المكتملة بنظام المستويات لاحقًا.</p>
+    </div>
+  </section>
+
+  <!-- شاشة الإعدادات -->
+  <section id="settings" class="screen">
+    <button class="back-button" onclick="showScreen('home')">العودة إلى الرئيسية</button>
+    <h2 class="page-heading">الإعدادات</h2>
+    <p class="page-subtitle">تحكّم بتجربتك داخل تحدّي العرب.</p>
+
+    <div class="panel">
+      <h3 class="panel-title">الصوت والتجربة</h3>
+
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>المؤثرات الصوتية</strong>
+          <small>أصوات الأزرار والتنبيهات داخل اللعبة.</small>
+        </div>
+        <label class="switch">
+          <input id="sound-setting" type="checkbox" checked>
+          <span class="switch-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>الموسيقى الخلفية</strong>
+          <small>تشغيل الموسيقى عند إضافتها إلى اللعبة.</small>
+        </div>
+        <label class="switch">
+          <input id="music-setting" type="checkbox" checked>
+          <span class="switch-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>الاهتزاز</strong>
+          <small>تنبيهات اهتزازية على الأجهزة المدعومة.</small>
+        </div>
+        <label class="switch">
+          <input id="vibration-setting" type="checkbox">
+          <span class="switch-track"></span>
+        </label>
+      </div>
+
+      <div class="settings-row" style="display:block">
+        <div class="setting-copy">
+          <strong>مستوى الصوت</strong>
+          <small>درجة الصوت العامة عند إضافة الملفات الصوتية.</small>
+        </div>
+        <input class="volume-setting" id="volume-setting" type="range" min="0" max="100" value="70">
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-title">اللغة والعرض</h3>
+
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>لغة اللعبة</strong>
+          <small>اللغة المستخدمة في القوائم والنصوص.</small>
+        </div>
+        <select id="language-setting" class="settings-select">
+          <option value="ar">العربية</option>
+          <option value="en">English (لاحقًا)</option>
+        </select>
+      </div>
+
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>تقليل الحركة</strong>
+          <small>تقليل الانتقالات المتحركة في الواجهة.</small>
+        </div>
+        <label class="switch">
+          <input id="motion-setting" type="checkbox">
+          <span class="switch-track"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel-title">ملف اللاعب</h3>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>تعديل بيانات اللاعب</strong>
+          <small>الاسم والعمر والجنس.</small>
+        </div>
+        <button class="secondary-button" style="width:auto;padding:7px 12px" onclick="openProfileEditor()">تعديل</button>
+      </div>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>شخصية المرشد</strong>
+          <small>اختر المرشد الذي تفضله.</small>
+        </div>
+        <button class="secondary-button" style="width:auto;padding:7px 12px" onclick="openMentorPicker()">تغيير</button>
+      </div>
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>إعادة ضبط الإعدادات</strong>
+          <small>إرجاع إعدادات الصوت والعرض إلى الافتراضي.</small>
+        </div>
+        <button class="secondary-button" style="width:auto;padding:7px 12px" onclick="resetSettings()">إعادة</button>
+      </div>
+    </div>
+
+    <div class="panel danger-panel">
+      <div class="settings-row">
+        <div class="setting-copy">
+          <strong>مسح بيانات اللعبة</strong>
+          <small>حذف بيانات اللاعب والتقدم والبدء من جديد.</small>
+        </div>
+        <button class="danger-button" onclick="confirmResetGame()">مسح البيانات</button>
+      </div>
+    </div>
+
+    <div class="notice">
+      يتم حفظ هذه التفضيلات على جهازك في المتصفح. ربط الصوت الفعلي والاهتزاز واللغة الإنجليزية سيتم في مراحل التطوير التالية.
+    </div>
+  </section>
+
+  <!-- شريط التنقل -->
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <button class="nav-button" data-screen="achievements" onclick="showScreen('achievements')">
+      <svg><use href="#i-trophy"/></svg><span>الإنجازات</span>
+    </button>
+    <button class="nav-button" data-screen="shop" onclick="openShop()">
+      <svg><use href="#i-shop"/></svg><span>المتجر</span>
+    </button>
+    <button class="nav-button active" data-screen="home" onclick="showScreen('home')">
+      <svg><use href="#i-home"/></svg><span>الرئيسية</span>
+    </button>
+    <button class="nav-button" data-screen="level" onclick="showScreen('level')">
+      <svg><use href="#i-level"/></svg><span>المستوى</span>
+    </button>
+    <button class="nav-button" data-screen="tasks" onclick="showScreen('tasks')">
+      <svg><use href="#i-task"/></svg><span>المهام</span>
+    </button>
+  </nav>
+</div>
+
+<!-- نافذة بيانات اللاعب -->
+<div class="modal-backdrop" id="profile-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-emblem"><svg><use href="#i-person"/></svg></div>
+    <h2 id="modal-title">أهلًا بك في تحدّي العرب!</h2>
+    <p class="modal-intro">أدخل بياناتك للبدء.</p>
+
+    <form id="profile-form">
+      <div class="field">
+        <label for="player-name">اسمك</label>
+        <input id="player-name" type="text" maxlength="22" placeholder="اكتب اسمك هنا" autocomplete="nickname" required>
+      </div>
+
+      <div class="field">
+        <label for="player-age">عمرك</label>
+        <input id="player-age" type="number" min="5" max="110" placeholder="اكتب عمرك" required>
+      </div>
+
+      <label style="display:block;font-size:12px;color:#77664d;font-weight:bold">الجنس</label>
+      <div class="gender-options">
+        <button type="button" class="gender-option" data-gender="male" onclick="selectGender('male')">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="13" r="8" fill="#e6bd8d"/>
+            <path d="M12 12c1-9 15-11 17 1l-4-3-5 2-8 1" fill="#39465a"/>
+            <path d="M7 38c1-12 6-17 13-17s12 5 13 17" fill="#3a91bd"/>
+            <path d="M14 23l6 7 6-7" fill="none" stroke="#fff" stroke-width="2"/>
+          </svg>
+          ذكر
+        </button>
+        <button type="button" class="gender-option" data-gender="female" onclick="selectGender('female')">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M8 19C5 3 15 1 21 2c12 1 16 13 11 27l-5 7H12z" fill="#39465a"/>
+            <ellipse cx="20" cy="15" rx="9" ry="11" fill="#e6bd8d"/>
+            <path d="M8 13C7 2 17 0 23 2c8 2 11 8 9 15l-5-8-8 2-9 5z" fill="#39465a"/>
+            <path d="M5 39c1-12 6-17 15-17s14 5 15 17" fill="#c74f52"/>
+            <path d="M10 24c-2-6-4-12-1-17M30 24c3-7 4-12 1-17" stroke="#f4e5cc" stroke-width="5" fill="none" stroke-linecap="round"/>
+          </svg>
+          أنثى
+        </button>
+      </div>
+
+      <p class="form-error" id="profile-error">يرجى إدخال اسم صحيح وعمر بين 5 و110 سنوات واختيار الجنس.</p>
+      <button type="submit" class="primary-button">ابدأ</button>
+    </form>
+  </div>
+</div>
+
+<!-- اختيار شخصية المرشد -->
+<div class="modal-backdrop" id="mentor-modal">
+  <div class="modal mentor-modal" role="dialog" aria-modal="true" aria-labelledby="mentor-title">
+    <div class="modal-emblem"><svg><use href="#i-person"/></svg></div>
+    <h2 id="mentor-title">شخصية المرشد</h2>
+    <p class="modal-intro">اختر الشخصية التي تفضلها.</p>
+    <div class="gender-options">
+      <button type="button" class="gender-option mentor-option" data-mentor="male" onclick="selectMentor('male')">ذكر</button>
+      <button type="button" class="gender-option mentor-option" data-mentor="female" onclick="selectMentor('female')">أنثى</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="secondary-button" onclick="closeMentorPicker()">إلغاء</button>
+      <button class="primary-button" onclick="saveMentorChoice()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- تأكيد مسح البيانات -->
+<div class="modal-backdrop" id="reset-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+    <div class="modal-emblem"><svg><use href="#i-lock"/></svg></div>
+    <h2 id="reset-title">مسح بيانات اللعبة؟</h2>
+    <p class="modal-intro">سيتم حذف بيانات اللاعب والتقدم المحفوظ على هذا الجهاز والبدء من جديد.</p>
+    <div style="display:flex;gap:8px">
+      <button class="secondary-button" onclick="closeResetConfirm()">إلغاء</button>
+      <button class="danger-button" onclick="resetGameData()">مسح البيانات</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const countries = [
+  "الأردن",
+  "الإمارات العربية المتحدة",
+  "البحرين",
+  "الجزائر",
+  "السعودية",
+  "السودان",
+  "الصومال",
+  "العراق",
+  "الكويت",
+  "المغرب",
+  "اليمن",
+  "تونس",
+  "جزر القمر",
+  "جيبوتي",
+  "سوريا",
+  "عُمان",
+  "فلسطين",
+  "قطر",
+  "لبنان",
+  "ليبيا",
+  "مصر",
+  "موريتانيا"
+];
+
+const defaultSettings = {
+  sound: true,
+  music: true,
+  vibration: false,
+  volume: 70,
+  language: "ar",
+  reduceMotion: false
+};
+
+let player = null;
+let chosenGender = "";
+let chosenMentor = "";
+let selectedCountries = [];
+let toastTimer = null;
+
+function readJSON(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function savePlayer() {
+  localStorage.setItem("arabChallengePlayer", JSON.stringify(player));
+}
+
+function loadPlayer() {
+  player = readJSON("arabChallengePlayer", null);
+
+  if (player) {
+    player.mentorGender = player.mentorGender || "male";
+    updateProfileDisplay();
+    document.getElementById("welcome-screen").classList.add("hidden");
+  }
+}
+
+function mentorSvg(gender) {
+  return gender === "female"
+    ? '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 38c1-14 7-20 15-20s14 6 15 20z" fill="#c74f52"/><path d="M7 20C3 4 13 0 21 1c14 1 18 17 10 30l-4 5H12z" fill="#f4e5cc"/><ellipse cx="20" cy="15" rx="9" ry="11" fill="#e6bd8d"/><path d="M9 15C6 3 18 0 24 3c7 3 9 8 7 14l-6-8-8 2z" fill="#39465a"/></svg>'
+    : '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="13" r="8" fill="#e6bd8d"/><path d="M12 12c1-9 15-11 17 1l-4-3-5 2-8 1" fill="#39465a"/><path d="M7 38c1-12 6-17 13-17s12 5 13 17" fill="#3a91bd"/></svg>';
+}
+
+function updateProfileDisplay() {
+  const name = player?.name || "لاعب";
+  player.mentorGender = player.mentorGender || "male";
+  document.getElementById("profile-name").textContent = name;
+  document.getElementById("hero-greeting").textContent = "أهلًا بك يا " + name;
+  const level = Math.min(100, Math.max(1, Number(player.level) || 1));
+  player.level = level;
+  document.getElementById("profile-level").textContent = level;
+  document.getElementById("profile-avatar").innerHTML = mentorSvg(player.mentorGender);
+  const mentorArt = document.getElementById("mentor-art");
+  if (mentorArt) mentorArt.innerHTML = mentorSvg(player.mentorGender);
+  document.getElementById("coin-count").textContent = player.coins ?? 120;
+  document.getElementById("life-count").textContent = player.lives ?? 5;
+}
+
+function selectGender(gender) {
+  chosenGender = gender;
+  document.querySelectorAll(".gender-option").forEach(button => {
+    button.classList.toggle("selected", button.dataset.gender === gender);
+  });
+}
+
+const playerNameInput = document.getElementById("player-name");
+playerNameInput.addEventListener("input", function () {
+  const cleaned = this.value.replace(/[0-9٠-٩]/g, "");
+  if (this.value !== cleaned) this.value = cleaned;
+});
+playerNameInput.addEventListener("focus", function () {
+  setTimeout(() => {
+    const modal = document.querySelector("#profile-modal .modal");
+    if (modal) modal.scrollTo({ top: Math.max(0, this.offsetTop - 20), behavior: "smooth" });
+  }, 250);
+});
+
+document.getElementById("profile-form").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("player-name").value.trim();
+  const age = Number(document.getElementById("player-age").value);
+  const error = document.getElementById("profile-error");
+
+  if (!name || /[0-9٠-٩]/.test(name) || name.length > 22 || !Number.isFinite(age) || age < 5 || age > 110 || !chosenGender) {
+    error.classList.add("show");
+    return;
+  }
+
+  const previous = player || {};
+  player = {
+    ...previous,
+    name,
+    age,
+    gender: chosenGender,
+    mentorGender: previous.mentorGender || "male",
+    level: previous.level || 1,
+    coins: previous.coins ?? 120,
+    lives: previous.lives ?? 5
+  };
+
+  savePlayer();
+  updateProfileDisplay();
+  document.getElementById("profile-modal").classList.remove("show");
+  showToast("أهلًا بك يا " + name + "، رحلتك بدأت!");
+});
+
+function openProfileEditor() {
+  document.getElementById("player-name").value = player?.name || "";
+  document.getElementById("player-age").value = player?.age || "";
+  chosenGender = player?.gender || "";
+  selectGender(chosenGender);
+  document.getElementById("modal-title").textContent = "تعديل بياناتك";
+  document.getElementById("profile-error").classList.remove("show");
+  document.getElementById("profile-modal").classList.add("show");
+}
+
+function startGameEntry() {
+  document.getElementById("welcome-screen").classList.add("hidden");
+  if (player) {
+    updateProfileDisplay();
+    showScreen("home");
+    return;
+  }
+  chosenGender = "";
+  document.getElementById("profile-form").reset();
+  document.querySelectorAll(".gender-option").forEach(button => button.classList.remove("selected"));
+  document.getElementById("profile-error").classList.remove("show");
+  document.getElementById("modal-title").textContent = "أهلًا بك في تحدّي العرب!";
+  document.getElementById("profile-modal").classList.add("show");
+}
+
+function showCustomerSupport() {
+  showToast("خدمة العملاء ستتوفر قريبًا.");
+}
+
+function openMentorPicker() {
+  chosenMentor = player?.mentorGender || "male";
+  selectMentor(chosenMentor);
+  document.getElementById("mentor-modal").classList.add("show");
+}
+
+function selectMentor(gender) {
+  chosenMentor = gender;
+  document.querySelectorAll(".mentor-option").forEach(button => {
+    button.classList.toggle("selected", button.dataset.mentor === gender);
+  });
+}
+
+function saveMentorChoice() {
+  if (!player) return;
+  player.mentorGender = chosenMentor || "male";
+  savePlayer();
+  updateProfileDisplay();
+  closeMentorPicker();
+  showToast("تم تغيير شخصية المرشد.");
+}
+
+function closeMentorPicker() {
+  document.getElementById("mentor-modal").classList.remove("show");
+}
+
+function confirmResetGame() {
+  document.getElementById("reset-modal").classList.add("show");
+}
+
+function closeResetConfirm() {
+  document.getElementById("reset-modal").classList.remove("show");
+}
+
+function resetGameData() {
+  localStorage.removeItem("arabChallengePlayer");
+  localStorage.removeItem("arabChallengeSettings");
+  player = null;
+  settings = {...defaultSettings};
+  loadSettingsIntoUI();
+  closeResetConfirm();
+  document.getElementById("profile-modal").classList.remove("show");
+  document.getElementById("mentor-modal").classList.remove("show");
+  document.getElementById("welcome-screen").classList.remove("hidden");
+  showScreen("home");
+  showToast("تم مسح بيانات اللعبة.");
+}
+
+function syncModalViewport() {
+  const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  document.documentElement.style.setProperty("--app-vh", height + "px");
+}
+syncModalViewport();
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", syncModalViewport);
+  window.visualViewport.addEventListener("scroll", syncModalViewport);
+}
+window.addEventListener("resize", syncModalViewport);
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+  const screen = document.getElementById(id);
+  if (screen) screen.classList.add("active");
+
+  document.querySelectorAll(".nav-button").forEach(button => {
+    button.classList.toggle("active", button.dataset.screen === id);
+  });
+
+  window.scrollTo({ top: 0, behavior: settings.reduceMotion ? "auto" : "smooth" });
+}
+
+function fillCountryLists() {
+  const first = document.getElementById("country1");
+  const second = document.getElementById("country2");
+
+  first.innerHTML = "";
+  second.innerHTML = "";
+
+  countries.forEach(country => {
+    const option1 = new Option(country, country);
+    const option2 = new Option(country, country);
+    first.add(option1);
+    second.add(option2);
+  });
+
+  first.value = "سوريا";
+  second.value = "العراق";
+}
+
+function startRandomComparison() {
+  const shuffled = [...countries].sort(() => Math.random() - 0.5);
+  selectedCountries = [shuffled[0], shuffled[1]];
+  showInstructions();
+}
+
+function startCustomComparison() {
+  const first = document.getElementById("country1").value;
+  const second = document.getElementById("country2").value;
+  const warning = document.getElementById("same-country-warning");
+
+  if (first === second) {
+    warning.style.display = "block";
+    return;
+  }
+
+  warning.style.display = "none";
+  selectedCountries = [first, second];
+  showInstructions();
+}
+
+function showInstructions() {
+  document.getElementById("comparison-names").textContent =
+    selectedCountries[0] + " × " + selectedCountries[1];
+  showScreen("instructions");
+}
+
+function beginComparison() {
+  document.getElementById("ready-names").textContent =
+    selectedCountries[0] + " مقابل " + selectedCountries[1];
+  showScreen("comparison-ready");
+}
+
+function openShop() {
+  showScreen("shop");
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+/* إعدادات تحفظ تلقائيًا */
+let settings = readJSON("arabChallengeSettings", {...defaultSettings});
+
+function saveSettings() {
+  localStorage.setItem("arabChallengeSettings", JSON.stringify(settings));
+}
+
+function loadSettingsIntoUI() {
+  document.getElementById("sound-setting").checked = settings.sound;
+  document.getElementById("music-setting").checked = settings.music;
+  document.getElementById("vibration-setting").checked = settings.vibration;
+  document.getElementById("volume-setting").value = settings.volume;
+  document.getElementById("language-setting").value = settings.language;
+  document.getElementById("motion-setting").checked = settings.reduceMotion;
+}
+
+document.getElementById("sound-setting").addEventListener("change", event => {
+  settings.sound = event.target.checked;
+  saveSettings();
+});
+
+document.getElementById("music-setting").addEventListener("change", event => {
+  settings.music = event.target.checked;
+  saveSettings();
+});
+
+document.getElementById("vibration-setting").addEventListener("change", event => {
+  settings.vibration = event.target.checked;
+  saveSettings();
+});
+
+document.getElementById("volume-setting").addEventListener("input", event => {
+  settings.volume = Number(event.target.value);
+  saveSettings();
+});
+
+document.getElementById("language-setting").addEventListener("change", event => {
+  settings.language = event.target.value;
+  saveSettings();
+  if (settings.language === "en") {
+    showToast("الواجهة الإنجليزية ستُضاف في مرحلة لاحقة.");
+  }
+});
+
+document.getElementById("motion-setting").addEventListener("change", event => {
+  settings.reduceMotion = event.target.checked;
+  saveSettings();
+  document.documentElement.style.scrollBehavior = settings.reduceMotion ? "auto" : "smooth";
+});
+
+function resetSettings() {
+  settings = {...defaultSettings};
+  saveSettings();
+  loadSettingsIntoUI();
+  showToast("تمت إعادة الإعدادات الافتراضية.");
+}
+
+fillCountryLists();
+loadSettingsIntoUI();
+loadPlayer();
+</script>
+</body>
+</html>
