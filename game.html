@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>تحدّي العرب - المرحلة</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
+    background:#173f3a;
+    font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+.game{
+    width:100%;
+    max-width:700px;
+    min-height:100vh;
+    margin:auto;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+}
+
+/* الشريط العلوي */
+.top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.top-button{
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:14px;
+    background:rgba(255,255,255,.10);
+    color:#fff;
+    font-size:21px;
+    cursor:pointer;
+}
+
+.level-title{
+    flex:1;
+    text-align:center;
+}
+
+.level-title small{
+    display:block;
+    font-size:12px;
+    opacity:.72;
+    margin-bottom:3px;
+}
+
+.level-title strong{
+    font-size:20px;
+}
+
+.hints{
+    min-width:92px;
+    height:44px;
+    border-radius:14px;
+    background:rgba(255,255,255,.10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    font-size:13px;
+}
+
+.hints span{
+    font-size:19px;
+}
+
+/* منطقة الألغاز */
+.puzzles{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.puzzle{
+    min-height:105px;
+    padding:14px 12px;
+    border-radius:18px;
+    background:rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.07);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transition:.2s;
+}
+
+.puzzle.active{
+    border-color:rgba(220,177,86,.8);
+    background:rgba(220,177,86,.10);
+}
+
+.puzzle.done{
+    opacity:.55;
+}
+
+.puzzle-number{
+    font-size:11px;
+    opacity:.55;
+    margin-bottom:7px;
+}
+
+.clue{
+    font-size:15px;
+    line-height:1.6;
+}
+
+/* الإجابة */
+.answer-section{
+    margin-top:16px;
+    padding:15px;
+    border-radius:20px;
+    background:rgba(0,0,0,.12);
+}
+
+.answer-title{
+    text-align:center;
+    font-size:13px;
+    opacity:.7;
+    margin-bottom:12px;
+}
+
+.answer{
+    min-height:54px;
+    display:flex;
+    direction:rtl;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+.answer-slot{
+    min-width:34px;
+    height:42px;
+    padding:0 7px;
+    border-radius:10px;
+    background:rgba(255,255,255,.12);
+    border-bottom:2px solid rgba(220,177,86,.8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+}
+
+.answer-empty{
+    width:100%;
+    text-align:center;
+    opacity:.35;
+    font-size:13px;
+}
+
+/* قطع الحروف */
+.chunks-title{
+    text-align:center;
+    margin:17px 0 10px;
+    font-size:13px;
+    opacity:.7;
+}
+
+.chunks{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    direction:rtl;
+}
+
+.chunk{
+    min-width:46px;
+    height:46px;
+    padding:0 10px;
+    border:0;
+    border-radius:13px;
+    background:#fff;
+    color:#173f3a;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,.12);
+    transition:transform .12s,opacity .12s;
+}
+
+.chunk:active{
+    transform:scale(.94);
+}
+
+.chunk.used{
+    opacity:.22;
+    pointer-events:none;
+}
+
+/* الأزرار */
+.controls{
+    display:flex;
+    gap:9px;
+    margin-top:14px;
+}
+
+.control{
+    flex:1;
+    height:48px;
+    border:0;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.check{
+    background:#dcb156;
+    color:#173f3a;
+}
+
+.clear{
+    background:rgba(255,255,255,.10);
+    color:#fff;
+}
+
+.hint-button{
+    background:rgba(255,255,255,.10);
+    color:#fff;
+}
+
+/* رسالة */
+.message{
+    min-height:25px;
+    text-align:center;
+    margin-top:9px;
+    font-size:13px;
+}
+
+@media (min-width:600px){
+    .game{
+        padding:24px;
+    }
+
+    .puzzles{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .puzzle{
+        min-height:120px;
+    }
+
+    .clue{
+        font-size:16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="top-bar">
+
+        <button class="top-button" onclick="goBack()">‹</button>
+
+        <div class="level-title">
+            <small>تحدّي العرب</small>
+            <strong>المرحلة 01</strong>
+        </div>
+
+        <div class="hints">
+            <span>💡</span>
+            <b id="hintCount">6</b>
+            <small>التلميحات</small>
+        </div>
+
+    </div>
+
+
+    <div class="puzzles" id="puzzles"></div>
+
+
+    <div class="answer-section">
+
+        <div class="answer-title">إجابتك</div>
+
+        <div class="answer" id="answer">
+            <div class="answer-empty">اختر قطع الحروف بالترتيب</div>
+        </div>
+
+    </div>
+
+
+    <div class="chunks-title">قطع الحروف</div>
+
+    <div class="chunks" id="chunks"></div>
+
+
+    <div class="controls">
+
+        <button class="control clear" onclick="clearAnswer()">
+            مسح
+        </button>
+
+        <button class="control hint-button" onclick="useHint()">
+            تلميح
+        </button>
+
+        <button class="control check" onclick="checkAnswer()">
+            تحقق
+        </button>
+
+    </div>
+
+    <div class="message" id="message"></div>
+
+</div>
+
+
+<script>
+
+const puzzles = [
+
+    {
+        clue: "السوق العربي في الجاهلية",
+        answer: "عكاظ"
+    },
+
+    {
+        clue: "منظمة الأغذية والزراعة",
+        answer: "الفاو"
+    },
+
+    {
+        clue: "مسرحية موسيقية غنائية",
+        answer: "أوبريت"
+    },
+
+    {
+        clue: "مدينة أثرية نبطية في الأردن",
+        answer: "البتراء"
+    },
+
+    {
+        clue: "آلة موسيقية عربية شهيرة",
+        answer: "العود"
+    },
+
+    {
+        clue: "من أشهر الخطوط العربية",
+        answer: "النسخ"
+    }
+
+];
+
+
+let currentPuzzle = 0;
+let selectedChunks = [];
+let hintCount = 6;
+
+
+/* إنشاء الألغاز */
+
+function renderPuzzles(){
+
+    const container = document.getElementById("puzzles");
+
+    container.innerHTML = "";
+
+    puzzles.forEach((puzzle,index)=>{
+
+        const card = document.createElement("div");
+
+        card.className = "puzzle";
+
+        if(index === currentPuzzle){
+            card.classList.add("active");
+        }
+
+        card.id = "puzzle-" + index;
+
+        card.innerHTML = `
+            <div class="puzzle-number">لغز ${index + 1}</div>
+            <div class="clue">${puzzle.clue}</div>
+        `;
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/*
+    تقسيم الإجابة:
+    الحد الأقصى للقطعة = حرفان.
+*/
+
+function splitAnswer(answer){
+
+    const chars = [...answer];
+
+    const result = [];
+
+    let i = 0;
+
+    while(i < chars.length){
+
+        /*
+          أحياناً نستخدم قطعة من حرفين،
+          وأحياناً حرف واحد.
+        */
+
+        if(i + 1 < chars.length && Math.random() > 0.45){
+
+            result.push(chars[i] + chars[i + 1]);
+
+            i += 2;
+
+        }else{
+
+            result.push(chars[i]);
+
+            i++;
+
+        }
+
+    }
+
+    return result;
+
+}
+
+
+/*
+    إنشاء بنك الحروف.
+
+    مهم:
+    لا نضع قطع الإجابة متجاورة.
+*/
+
+function createChunks(){
+
+    const correctChunks = splitAnswer(
+        puzzles[currentPuzzle].answer
+    );
+
+    const decoys = [
+        "ا","ب","ت","ث","ج","ح","خ",
+        "د","ذ","ر","ز","س","ش","ص",
+        "ض","ط","ظ","ع","غ","ف","ق",
+        "ك","ل","م","ن","ه","و","ي",
+        "ال","من","في","عن","ما","لا"
+    ];
+
+    let bank = [...correctChunks];
+
+    while(bank.length < 12){
+
+        const random =
+            decoys[Math.floor(Math.random() * decoys.length)];
+
+        bank.push(random);
+
+    }
+
+    /*
+      خلط كامل حتى لا تظهر حروف الإجابة
+      بجانب بعضها.
+    */
+
+    for(let i = bank.length - 1; i > 0; i--){
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [bank[i],bank[j]] =
+        [bank[j],bank[i]];
+
+    }
+
+    const container =
+        document.getElementById("chunks");
+
+    container.innerHTML = "";
+
+    bank.forEach((chunk,index)=>{
+
+        const button =
+            document.createElement("button");
+
+        button.className = "chunk";
+
+        button.textContent = chunk;
+
+        button.dataset.index = index;
+
+        button.onclick = () =>
+            selectChunk(button,chunk);
+
+        container.appendChild(button);
+
+    });
+
+}
+
+
+/* اختيار قطعة */
+
+function selectChunk(button,chunk){
+
+    selectedChunks.push({
+        value:chunk,
+        element:button
+    });
+
+    button.classList.add("used");
+
+    renderAnswer();
+
+}
+
+
+/* عرض الإجابة */
+
+function renderAnswer(){
+
+    const container =
+        document.getElementById("answer");
+
+    container.innerHTML = "";
+
+    if(selectedChunks.length === 0){
+
+        container.innerHTML =
+            `<div class="answer-empty">
+                اختر قطع الحروف بالترتيب
+            </div>`;
+
+        return;
+
+    }
+
+    selectedChunks.forEach(item=>{
+
+        const slot =
+            document.createElement("div");
+
+        slot.className = "answer-slot";
+
+        slot.textContent = item.value;
+
+        container.appendChild(slot);
+
+    });
+
+}
+
+
+/* مسح */
+
+function clearAnswer(){
+
+    selectedChunks.forEach(item=>{
+        item.element.classList.remove("used");
+    });
+
+    selectedChunks = [];
+
+    renderAnswer();
+
+    showMessage("");
+
+}
+
+
+/* التحقق */
+
+function checkAnswer(){
+
+    const answer =
+        selectedChunks
+        .map(item=>item.value)
+        .join("");
+
+    const correct =
+        puzzles[currentPuzzle].answer;
+
+    if(answer === correct){
+
+        document
+            .getElementById("puzzle-" + currentPuzzle)
+            .classList.add("done");
+
+        showMessage("إجابة صحيحة ✓");
+
+        setTimeout(()=>{
+
+            if(currentPuzzle < puzzles.length - 1){
+
+                currentPuzzle++;
+
+                selectedChunks = [];
+
+                renderPuzzles();
+
+                createChunks();
+
+                renderAnswer();
+
+                showMessage("");
+
+            }else{
+
+                showMessage("أكملت المرحلة ✓");
+
+            }
+
+        },700);
+
+    }else{
+
+        showMessage("الإجابة غير صحيحة");
+
+    }
+
+}
+
+
+/* التلميح */
+
+function useHint(){
+
+    if(hintCount <= 0){
+
+        showMessage("لا توجد تلميحات");
+
+        return;
+
+    }
+
+    hintCount--;
+
+    document.getElementById("hintCount").textContent =
+        hintCount;
+
+    const correct =
+        puzzles[currentPuzzle].answer;
+
+    const next =
+        [...correct].slice(
+            0,
+            selectedChunks
+                .map(x=>x.value)
+                .join("")
+                .length + 1
+        ).join("");
+
+    showMessage("ابدأ الإجابة بـ: " + next);
+
+}
+
+
+/* الرسائل */
+
+function showMessage(text){
+
+    document.getElementById("message").textContent =
+        text;
+
+}
+
+
+/* الرجوع */
+
+function goBack(){
+
+    window.location.href = "index.html";
+
+}
+
+
+/* البداية */
+
+renderPuzzles();
+createChunks();
+renderAnswer();
+
+</script>
+
+</body>
+</html>
