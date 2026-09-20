@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحدّي العرب</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(160deg, #101b35, #172d50);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.game {
+    width: 100%;
+    max-width: 430px;
+    background: #ffffff;
+    color: #17233c;
+    border-radius: 24px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 12px 40px #0005;
+}
+
+h1 {
+    margin: 5px 0;
+    font-size: 30px;
+    color: #176b58;
+}
+
+.subtitle {
+    color: #738096;
+    margin-bottom: 22px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.stat {
+    background: #eef3f8;
+    padding: 10px;
+    border-radius: 12px;
+    flex: 1;
+    font-size: 14px;
+}
+
+.timer-box {
+    height: 12px;
+    background: #e5eaf0;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+#timerBar {
+    height: 100%;
+    width: 100%;
+    background: #22a783;
+    transition: width 1s linear;
+}
+
+#timer {
+    font-size: 25px;
+    font-weight: bold;
+    color: #176b58;
+}
+
+.countries {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 20px 0;
+    background: #f3f6fa;
+    padding: 18px 8px;
+    border-radius: 18px;
+}
+
+.country {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.flag {
+    display: block;
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+
+.vs {
+    font-weight: bold;
+    color: #e18b32;
+    font-size: 20px;
+}
+
+#question {
+    font-size: 21px;
+    line-height: 1.6;
+    margin: 20px 0;
+}
+
+.answers {
+    display: grid;
+    gap: 10px;
+}
+
+.answer {
+    border: 2px solid #dce4ed;
+    border-radius: 14px;
+    padding: 15px 10px;
+    background: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #17233c;
+}
+
+.answer:active {
+    transform: scale(.98);
+}
+
+.answer:disabled {
+    cursor: default;
+    opacity: .85;
+}
+
+.correct {
+    background: #d9f6e8;
+    border-color: #22a783;
+}
+
+.wrong {
+    background: #ffe1e1;
+    border-color: #e34e4e;
+}
+
+#message {
+    min-height: 28px;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.main-btn {
+    width: 100%;
+    padding: 15px;
+    background: #176b58;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.note {
+    color: #8290a3;
+    font-size: 12px;
+    margin-top: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🌍 تحدّي العرب</h1>
+    <div class="subtitle">اختبر معلوماتك عن الدول العربية!</div>
+
+    <div class="stats">
+        <div class="stat">🏆 النقاط<br><strong id="score">0</strong></div>
+        <div class="stat">📚 المستوى<br><strong id="level">1</strong></div>
+        <div class="stat">❓ السؤال<br><strong id="questionNumber">1 / 3</strong></div>
+    </div>
+
+    <div id="gameArea">
+
+        <div id="timer">15</div>
+        <div class="timer-box">
+            <div id="timerBar"></div>
+        </div>
+
+        <div class="countries">
+            <div class="country">
+                <span class="flag">🇮🇶</span>
+                العراق
+            </div>
+
+            <div class="vs">مقابل</div>
+
+            <div class="country">
+                <span class="flag">🇸🇾</span>
+                سوريا
+            </div>
+        </div>
+
+        <div id="question">أي الدولتين أكبر مساحة؟</div>
+
+        <div class="answers" id="answers"></div>
+
+        <div id="message"></div>
+
+        <button id="continueBtn" class="main-btn hidden">
+            السؤال التالي
+        </button>
+
+    </div>
+
+    <div id="endArea" class="hidden">
+        <h2 id="endTitle">انتهى المستوى!</h2>
+        <p id="endMessage"></p>
+        <button class="main-btn" onclick="restartLevel()">
+            إعادة المستوى
+        </button>
+    </div>
+
+    <div class="note">
+        تحدّ نفسك واكتشف معلومات جديدة عن وطننا العربي
+    </div>
+
+</div>
+
+<script>
+const questions = [
+    {
+        text: "أي الدولتين أكبر مساحة؟",
+        answers: ["العراق", "سوريا", "متساويتان"],
+        correct: 0
+    },
+    {
+        text: "أي الدولتين تقع عاصمتها على نهر دجلة؟",
+        answers: ["سوريا", "العراق", "كلتاهما"],
+        correct: 1
+    },
+    {
+        text: "أي الدولتين عاصمتها دمشق؟",
+        answers: ["العراق", "سوريا", "الأردن"],
+        correct: 1
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let timeLeft = 15;
+let timerInterval = null;
+let answered = false;
+
+const timerElement = document.getElementById("timer");
+const timerBar = document.getElementById("timerBar");
+const questionElement = document.getElementById("question");
+const answersElement = document.getElementById("answers");
+const messageElement = document.getElementById("message");
+const continueBtn = document.getElementById("continueBtn");
+const gameArea = document.getElementById("gameArea");
+const endArea = document.getElementById("endArea");
+
+function loadQuestion() {
+    clearInterval(timerInterval);
+    answered = false;
+    timeLeft = 15;
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent =
+        `${currentQuestion + 1} / ${questions.length}`;
+
+    questionElement.textContent = q.text;
+    messageElement.textContent = "";
+    continueBtn.classList.add("hidden");
+    answersElement.innerHTML = "";
+
+    q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer";
+        button.textContent = answer;
+
+        button.onclick = () => checkAnswer(index, button);
+
+        answersElement.appendChild(button);
+    });
+
+    updateTimer();
+    timerInterval = setInterval(tick, 1000);
+}
+
+function tick() {
+    if (answered) return;
+
+    timeLeft--;
+    updateTimer();
+
+    if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        answered = true;
+        messageElement.textContent = "⏰ انتهى الوقت! ستعيد المستوى.";
+        disableAnswers();
+        showRestart();
+    }
+}
+
+function updateTimer() {
+    timerElement.textContent = timeLeft;
+    timerBar.style.width = (timeLeft / 15 * 100) + "%";
+
+    if (timeLeft <= 5) {
+        timerBar.style.background = "#e34e4e";
+        timerElement.style.color = "#e34e4e";
+    } else {
+        timerBar.style.background = "#22a783";
+        timerElement.style.color = "#176b58";
+    }
+}
+
+function checkAnswer(index, button) {
+    if (answered) return;
+
+    answered = true;
+    clearInterval(timerInterval);
+
+    const correctIndex = questions[currentQuestion].correct;
+
+    if (index === correctIndex) {
+        button.classList.add("correct");
+        score += 10;
+        document.getElementById("score").textContent = score;
+        messageElement.textContent = "✅ إجابة صحيحة! أحسنت.";
+
+        disableAnswers();
+        continueBtn.classList.remove("hidden");
+
+        if (currentQuestion === questions.length - 1) {
+            continueBtn.textContent = "إكمال المستوى";
+        } else {
+            continueBtn.textContent = "السؤال التالي";
+        }
+
+    } else {
+        button.classList.add("wrong");
+        messageElement.textContent = "❌ إجابة خاطئة! ستعيد المستوى.";
+        disableAnswers();
+        showRestart();
+    }
+}
+
+function disableAnswers() {
+    document.querySelectorAll(".answer").forEach(button => {
+        button.disabled = true;
+    });
+}
+
+function showRestart() {
+    continueBtn.textContent = "إعادة المستوى";
+    continueBtn.classList.remove("hidden");
+    continueBtn.onclick = restartLevel;
+}
+
+continueBtn.onclick = nextQuestion;
+
+function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+    } else {
+        finishLevel();
+    }
+}
+
+function finishLevel() {
+    clearInterval(timerInterval);
+    gameArea.classList.add("hidden");
+    endArea.classList.remove("hidden");
+
+    document.getElementById("endTitle").textContent = "🎉 أكملت المستوى!";
+    document.getElementById("endMessage").textContent =
+        `حصلت على ${score} نقطة.`;
+}
+
+function restartLevel() {
+    clearInterval(timerInterval);
+
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("score").textContent = score;
+
+    endArea.classList.add("hidden");
+    gameArea.classList.remove("hidden");
+
+    continueBtn.onclick = nextQuestion;
+
+    loadQuestion();
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
