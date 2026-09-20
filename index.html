@@ -3,415 +3,814 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d35">
 <title>تحدّي العرب</title>
 
 <style>
+:root {
+  --bg: #101d35;
+  --panel: #192944;
+  --panel2: #203653;
+  --gold: #f3c969;
+  --teal: #50d6c1;
+  --white: #f7f8fc;
+  --muted: #b8c5d8;
+  --border: rgba(255,255,255,.10);
+}
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(160deg, #101b35, #172d50);
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
+  margin: 0;
+  background:
+    radial-gradient(ellipse at top, #203957 0%, var(--bg) 58%);
+  color: var(--white);
+  font-family: system-ui, "Tahoma", sans-serif;
+  min-height: 100vh;
 }
 
-.game {
-    width: 100%;
-    max-width: 430px;
-    background: #ffffff;
-    color: #17233c;
-    border-radius: 24px;
-    padding: 22px;
-    text-align: center;
-    box-shadow: 0 12px 40px #0005;
+button, select {
+  font: inherit;
 }
 
-h1 {
-    margin: 5px 0;
-    font-size: 30px;
-    color: #176b58;
+button {
+  cursor: pointer;
 }
 
-.subtitle {
-    color: #738096;
-    margin-bottom: 22px;
+.app {
+  width: 100%;
+  max-width: 560px;
+  margin: auto;
+  padding: 18px 16px 35px;
 }
 
-.stats {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 18px;
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
 }
 
-.stat {
-    background: #eef3f8;
-    padding: 10px;
-    border-radius: 12px;
-    flex: 1;
-    font-size: 14px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.timer-box {
-    height: 12px;
-    background: #e5eaf0;
-    border-radius: 20px;
-    overflow: hidden;
-    margin: 12px 0;
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: var(--bg);
+  background: linear-gradient(145deg, #ffe6a0, var(--gold));
+  font-size: 25px;
+  box-shadow: 0 5px 20px #0003;
 }
 
-#timerBar {
-    height: 100%;
-    width: 100%;
-    background: #22a783;
-    transition: width 1s linear;
+.brand h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.5px;
 }
 
-#timer {
-    font-size: 25px;
-    font-weight: bold;
-    color: #176b58;
+.brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
 }
 
-.countries {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin: 20px 0;
-    background: #f3f6fa;
-    padding: 18px 8px;
-    border-radius: 18px;
+.icon-button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  color: white;
+  font-size: 20px;
 }
 
-.country {
-    font-size: 20px;
-    font-weight: bold;
+.hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(243,201,105,.28);
+  border-radius: 24px;
+  padding: 22px 20px;
+  background: linear-gradient(135deg, #244361, #192944 70%);
+  margin-bottom: 22px;
 }
 
-.flag {
-    display: block;
-    font-size: 42px;
-    margin-bottom: 8px;
+.hero::after {
+  content: "✦";
+  position: absolute;
+  left: 18px;
+  top: 4px;
+  font-size: 95px;
+  color: rgba(243,201,105,.10);
+  transform: rotate(15deg);
+}
+
+.hero-label {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 9px;
+}
+
+.hero h2 {
+  margin: 0 0 9px;
+  font-size: 25px;
+  line-height: 1.4;
+}
+
+.hero p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+  max-width: 330px;
+}
+
+.primary-button {
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 18px;
+  background: linear-gradient(135deg, #ffe6a0, var(--gold));
+  color: #18243a;
+  font-weight: 900;
+  box-shadow: 0 5px 16px #0002;
+}
+
+.primary-button:active,
+.mode-card:active {
+  transform: scale(.98);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 25px 2px 12px;
+}
+
+.section-heading h3 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.section-heading span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mode-card {
+  min-height: 142px;
+  text-align: right;
+  padding: 16px 14px;
+  color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(145deg, var(--panel2), var(--panel));
+  transition: transform .12s ease;
+}
+
+.mode-card .mode-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  margin-bottom: 13px;
+  background: rgba(255,255,255,.09);
+}
+
+.mode-card h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.mode-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.mode-card.featured {
+  border-color: rgba(80,214,193,.42);
+}
+
+.mode-card.featured .mode-icon {
+  background: rgba(80,214,193,.15);
+}
+
+.mode-card.gold .mode-icon {
+  background: rgba(243,201,105,.15);
+}
+
+.bottom-note {
+  margin-top: 23px;
+  padding: 14px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+  animation: appear .18s ease-out;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.back-button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin-bottom: 18px;
+}
+
+.page-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.page-description {
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 15px;
+}
+
+.panel h3 {
+  margin: 0 0 15px;
+  font-size: 16px;
+}
+
+.country-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+select {
+  width: 100%;
+  color: var(--white);
+  background: #102039;
+  border: 1px solid #40536e;
+  border-radius: 13px;
+  padding: 14px 12px;
+  outline: none;
+}
+
+select:focus {
+  border-color: var(--teal);
 }
 
 .vs {
-    font-weight: bold;
-    color: #e18b32;
-    font-size: 20px;
+  text-align: center;
+  color: var(--gold);
+  font-weight: 900;
+  font-size: 14px;
 }
 
-#question {
-    font-size: 21px;
-    line-height: 1.6;
-    margin: 20px 0;
+.full-button {
+  width: 100%;
+  margin-top: 14px;
 }
 
-.answers {
-    display: grid;
-    gap: 10px;
+.notice {
+  background: rgba(80,214,193,.08);
+  border: 1px solid rgba(80,214,193,.25);
+  color: #d4fff8;
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 14px 0;
 }
 
-.answer {
-    border: 2px solid #dce4ed;
-    border-radius: 14px;
-    padding: 15px 10px;
-    background: white;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #17233c;
+.instruction-icon {
+  font-size: 44px;
+  margin-bottom: 12px;
 }
 
-.answer:active {
-    transform: scale(.98);
+.instruction-list {
+  padding-right: 20px;
+  color: var(--muted);
+  line-height: 2;
+  font-size: 14px;
 }
 
-.answer:disabled {
-    cursor: default;
-    opacity: .85;
+.placeholder {
+  text-align: center;
+  padding: 28px 18px;
 }
 
-.correct {
-    background: #d9f6e8;
-    border-color: #22a783;
+.placeholder .big-icon {
+  font-size: 54px;
+  margin-bottom: 14px;
 }
 
-.wrong {
-    background: #ffe1e1;
-    border-color: #e34e4e;
+.placeholder p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 14px;
 }
 
-#message {
-    min-height: 28px;
-    margin: 15px 0;
-    font-weight: bold;
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
 }
 
-.main-btn {
-    width: 100%;
-    padding: 15px;
-    background: #176b58;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
+.settings-row:last-child {
+  border-bottom: 0;
+}
+
+.settings-row strong {
+  font-size: 14px;
+}
+
+.settings-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.switch {
+  width: 48px;
+  height: 27px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: #526078;
+  transition: .2s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  right: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: .2s;
+}
+
+.switch input:checked + .slider {
+  background: #31b9a5;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(-21px);
 }
 
 .hidden {
-    display: none;
+  display: none !important;
 }
 
-.note {
-    color: #8290a3;
-    font-size: 12px;
-    margin-top: 18px;
+@media (max-width: 360px) {
+  .app { padding: 14px 12px 28px; }
+  .brand h1 { font-size: 19px; }
+  .hero h2 { font-size: 22px; }
+  .mode-card { padding: 13px 11px; }
 }
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<div class="game">
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <div>
+        <h1>تحدّي العرب</h1>
+        <small>اكتشف، قارن، وخمّن!</small>
+      </div>
+    </div>
+    <button class="icon-button" aria-label="الإعدادات" onclick="showScreen('settings')">⚙</button>
+  </header>
 
-    <h1>🌍 تحدّي العرب</h1>
-    <div class="subtitle">اختبر معلوماتك عن الدول العربية!</div>
+  <!-- الواجهة الرئيسية -->
+  <main id="home" class="screen active">
 
-    <div class="stats">
-        <div class="stat">🏆 النقاط<br><strong id="score">0</strong></div>
-        <div class="stat">📚 المستوى<br><strong id="level">1</strong></div>
-        <div class="stat">❓ السؤال<br><strong id="questionNumber">1 / 3</strong></div>
+    <section class="hero">
+      <div class="hero-label">هيا نبدأ التحدّي!</div>
+      <h2>كم تعرف عن عالمنا العربي؟</h2>
+      <p>اختبر معلوماتك، اكتشف أسرار الدول العربية، وتحدَّ نفسك في جولات متنوعة.</p>
+      <button class="primary-button" onclick="showScreen('modes')">استكشف أنماط اللعب ←</button>
+    </section>
+
+    <div class="section-heading">
+      <h3>اختر طريقة اللعب</h3>
+      <span>اختر تحدّيك</span>
     </div>
 
-    <div id="gameArea">
+    <div class="mode-grid">
 
-        <div id="timer">15</div>
-        <div class="timer-box">
-            <div id="timerBar"></div>
+      <button class="mode-card featured" onclick="startRandomComparison()">
+        <div class="mode-icon">⚖</div>
+        <h4>مقارنة عشوائية</h4>
+        <p>دع اللعبة تختار دولتين عربيتين لك.</p>
+      </button>
+
+      <button class="mode-card featured gold" onclick="showScreen('custom')">
+        <div class="mode-icon">🌍</div>
+        <h4>مقارنة مخصصة</h4>
+        <p>اختر دولتين، وابدأ التحدّي بينهما.</p>
+      </button>
+
+      <button class="mode-card" onclick="showScreen('guess-country')">
+        <div class="mode-icon">🔎</div>
+        <h4>خمن الدولة</h4>
+        <p>اقرأ التلميحات وحاول معرفة الدولة.</p>
+      </button>
+
+      <button class="mode-card" onclick="showScreen('random-info')">
+        <div class="mode-icon">🧠</div>
+        <h4>معلومات عشوائية</h4>
+        <p>أسئلة متنوعة من جميع أنحاء الوطن العربي.</p>
+      </button>
+
+      <button class="mode-card gold" onclick="showScreen('guess-food')">
+        <div class="mode-icon">🍲</div>
+        <h4>خمن الطبق</h4>
+        <p>اختبر معرفتك بالأطباق العربية.</p>
+      </button>
+
+      <button class="mode-card" onclick="showScreen('coming-soon')">
+        <div class="mode-icon">🏆</div>
+        <h4>المزيد قريبًا</h4>
+        <p>أنماط وتحديات جديدة سنضيفها لاحقًا.</p>
+      </button>
+
+    </div>
+
+    <div class="bottom-note">
+      لعبة تحدّي العرب — رحلة في الجغرافيا والتاريخ والثقافة العربية
+    </div>
+  </main>
+
+  <!-- قائمة أنماط اللعب -->
+  <section id="modes" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <h2 class="page-title">أنماط اللعب</h2>
+    <p class="page-description">اختر النمط الذي يناسبك. ستُضاف تحديات جديدة مع تطور اللعبة.</p>
+
+    <div class="mode-grid">
+      <button class="mode-card featured" onclick="startRandomComparison()">
+        <div class="mode-icon">⚖</div>
+        <h4>مقارنة عشوائية</h4>
+        <p>دولتان يختارهما النظام.</p>
+      </button>
+      <button class="mode-card featured gold" onclick="showScreen('custom')">
+        <div class="mode-icon">🌍</div>
+        <h4>مقارنة مخصصة</h4>
+        <p>أنت تختار الدولتين.</p>
+      </button>
+      <button class="mode-card" onclick="showScreen('guess-country')">
+        <div class="mode-icon">🔎</div>
+        <h4>خمن الدولة</h4>
+        <p>تعرّف على الدولة من التلميحات.</p>
+      </button>
+      <button class="mode-card" onclick="showScreen('random-info')">
+        <div class="mode-icon">🧠</div>
+        <h4>معلومات عشوائية</h4>
+        <p>أسئلة من مختلف المجالات.</p>
+      </button>
+      <button class="mode-card gold" onclick="showScreen('guess-food')">
+        <div class="mode-icon">🍲</div>
+        <h4>خمن الطبق</h4>
+        <p>أطباق ومأكولات عربية.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- المقارنة المخصصة -->
+  <section id="custom" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <h2 class="page-title">مقارنة مخصصة</h2>
+    <p class="page-description">اختر دولتين عربيتين بنفسك، ثم استعد لاختبار معلوماتك عنهما.</p>
+
+    <div class="panel">
+      <div class="country-fields">
+        <div>
+          <label for="country1">الدولة الأولى</label>
+          <select id="country1"></select>
         </div>
 
-        <div class="countries">
-            <div class="country">
-                <span class="flag">🇮🇶</span>
-                العراق
-            </div>
+        <div class="vs">مقابل</div>
 
-            <div class="vs">مقابل</div>
-
-            <div class="country">
-                <span class="flag">🇸🇾</span>
-                سوريا
-            </div>
+        <div>
+          <label for="country2">الدولة الثانية</label>
+          <select id="country2"></select>
         </div>
+      </div>
 
-        <div id="question">أي الدولتين أكبر مساحة؟</div>
+      <div id="same-country-warning" class="notice hidden">
+        اختر دولتين مختلفتين حتى تتمكن من بدء المقارنة.
+      </div>
 
-        <div class="answers" id="answers"></div>
+      <button class="primary-button full-button" onclick="startCustomComparison()">
+        تأكيد الاختيار ←
+      </button>
+    </div>
+  </section>
 
-        <div id="message"></div>
+  <!-- تعليمات المقارنة -->
+  <section id="instructions" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
 
-        <button id="continueBtn" class="main-btn hidden">
-            السؤال التالي
-        </button>
+    <div class="panel">
+      <div class="instruction-icon">📜</div>
+      <h2 class="page-title">قبل أن تبدأ!</h2>
+      <p id="comparison-names" class="page-description"></p>
 
+      <ul class="instruction-list">
+        <li>ستظهر لك أسئلة عن الدولتين اللتين اخترتهما.</li>
+        <li>لديك 10 ثوانٍ للإجابة عن كل سؤال.</li>
+        <li>اختر إجابتك قبل انتهاء الوقت.</li>
+        <li>الإجابة الصحيحة تمنحك نقاطًا.</li>
+        <li>انتبه! الخطأ يعيدك إلى بداية المستوى الحالي.</li>
+      </ul>
+
+      <div class="notice">
+        جهّز معلوماتك، وركّز جيدًا... بعض الأسئلة تحتاج إلى سرعة ملاحظة وربط المعلومات!
+      </div>
+
+      <button class="primary-button full-button" onclick="beginComparison()">
+        فهمت، ابدأ التحدّي!
+      </button>
+    </div>
+  </section>
+
+  <!-- شاشة مؤقتة للمقارنة -->
+  <section id="comparison-ready" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <div class="panel placeholder">
+      <div class="big-icon">⚖️</div>
+      <h2 class="page-title">المقارنة جاهزة!</h2>
+      <p id="ready-names"></p>
+      <p>تم تجهيز اختيار الدولتين. سنضيف نظام الأسئلة والمستويات والنقاط في الخطوة التالية.</p>
+      <button class="primary-button full-button" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- خمن الدولة -->
+  <section id="guess-country" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <div class="panel placeholder">
+      <div class="big-icon">🔎</div>
+      <h2 class="page-title">خمن الدولة</h2>
+      <p>قريبًا: تلميحات جغرافية وتاريخية وثقافية تساعدك على اكتشاف الدولة المخفية.</p>
+      <button class="primary-button" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- معلومات عشوائية -->
+  <section id="random-info" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <div class="panel placeholder">
+      <div class="big-icon">🧠</div>
+      <h2 class="page-title">معلومات عشوائية</h2>
+      <p>قريبًا: جولات تجمع أسئلة من دول الوطن العربي في التاريخ والجغرافيا والثقافة وغيرها.</p>
+      <button class="primary-button" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- خمن الطبق -->
+  <section id="guess-food" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <div class="panel placeholder">
+      <div class="big-icon">🍲</div>
+      <h2 class="page-title">خمن الطبق</h2>
+      <p>قريبًا: شاهد صور الأطباق العربية أو اقرأ تلميحات عنها، ثم حاول معرفة اسم الطبق.</p>
+      <button class="primary-button" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- المزيد قريبًا -->
+  <section id="coming-soon" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <div class="panel placeholder">
+      <div class="big-icon">🏆</div>
+      <h2 class="page-title">المزيد من التحديات</h2>
+      <p>هذه المساحة مخصصة للأقسام الجديدة التي سنضيفها لاحقًا، مثل التحديات اليومية والإنجازات.</p>
+      <button class="primary-button" onclick="showScreen('home')">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <!-- الإعدادات -->
+  <section id="settings" class="screen">
+    <button class="back-button" onclick="showScreen('home')">→ العودة للرئيسية</button>
+    <h2 class="page-title">الإعدادات</h2>
+    <p class="page-description">خصص تجربة اللعب بالطريقة التي تناسبك.</p>
+
+    <div class="panel">
+      <div class="settings-row">
+        <div>
+          <strong>الأصوات</strong>
+          <small>أصوات الأزرار والتنبيهات داخل اللعبة.</small>
+        </div>
+        <label class="switch">
+          <input id="sound-setting" type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div>
+          <strong>الموسيقى</strong>
+          <small>تشغيل الموسيقى الخلفية عند إضافتها.</small>
+        </div>
+        <label class="switch">
+          <input id="music-setting" type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div>
+          <strong>الاهتزاز</strong>
+          <small>اهتزاز الجهاز عند التنبيهات، إذا كان مدعومًا.</small>
+        </div>
+        <label class="switch">
+          <input id="vibration-setting" type="checkbox">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div>
+          <strong>اللغة</strong>
+          <small>لغة واجهة اللعبة الحالية.</small>
+        </div>
+        <strong>العربية</strong>
+      </div>
     </div>
 
-    <div id="endArea" class="hidden">
-        <h2 id="endTitle">انتهى المستوى!</h2>
-        <p id="endMessage"></p>
-        <button class="main-btn" onclick="restartLevel()">
-            إعادة المستوى
-        </button>
+    <div class="notice">
+      هذه إعدادات الواجهة الأولية. سيتم ربطها بالأصوات والاهتزاز الفعلي عند إضافة تلك الميزات.
     </div>
-
-    <div class="note">
-        تحدّ نفسك واكتشف معلومات جديدة عن وطننا العربي
-    </div>
+  </section>
 
 </div>
 
 <script>
-const questions = [
-    {
-        text: "أي الدولتين أكبر مساحة؟",
-        answers: ["العراق", "سوريا", "متساويتان"],
-        correct: 0
-    },
-    {
-        text: "أي الدولتين تقع عاصمتها على نهر دجلة؟",
-        answers: ["سوريا", "العراق", "كلتاهما"],
-        correct: 1
-    },
-    {
-        text: "أي الدولتين عاصمتها دمشق؟",
-        answers: ["العراق", "سوريا", "الأردن"],
-        correct: 1
-    }
+const arabCountries = [
+  "الأردن",
+  "الإمارات العربية المتحدة",
+  "البحرين",
+  "الجزائر",
+  "السعودية",
+  "السودان",
+  "الصومال",
+  "العراق",
+  "الكويت",
+  "المغرب",
+  "اليمن",
+  "تونس",
+  "جزر القمر",
+  "جيبوتي",
+  "سوريا",
+  "عُمان",
+  "فلسطين",
+  "قطر",
+  "لبنان",
+  "ليبيا",
+  "مصر",
+  "موريتانيا"
 ];
 
-let currentQuestion = 0;
-let score = 0;
-let timeLeft = 15;
-let timerInterval = null;
-let answered = false;
+let selectedCountries = [];
 
-const timerElement = document.getElementById("timer");
-const timerBar = document.getElementById("timerBar");
-const questionElement = document.getElementById("question");
-const answersElement = document.getElementById("answers");
-const messageElement = document.getElementById("message");
-const continueBtn = document.getElementById("continueBtn");
-const gameArea = document.getElementById("gameArea");
-const endArea = document.getElementById("endArea");
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
 
-function loadQuestion() {
-    clearInterval(timerInterval);
-    answered = false;
-    timeLeft = 15;
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
 
-    const q = questions[currentQuestion];
-
-    document.getElementById("questionNumber").textContent =
-        `${currentQuestion + 1} / ${questions.length}`;
-
-    questionElement.textContent = q.text;
-    messageElement.textContent = "";
-    continueBtn.classList.add("hidden");
-    answersElement.innerHTML = "";
-
-    q.answers.forEach((answer, index) => {
-        const button = document.createElement("button");
-        button.className = "answer";
-        button.textContent = answer;
-
-        button.onclick = () => checkAnswer(index, button);
-
-        answersElement.appendChild(button);
-    });
-
-    updateTimer();
-    timerInterval = setInterval(tick, 1000);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function tick() {
-    if (answered) return;
+function fillCountryLists() {
+  const first = document.getElementById("country1");
+  const second = document.getElementById("country2");
 
-    timeLeft--;
-    updateTimer();
+  first.innerHTML = "";
+  second.innerHTML = "";
 
-    if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        answered = true;
-        messageElement.textContent = "⏰ انتهى الوقت! ستعيد المستوى.";
-        disableAnswers();
-        showRestart();
-    }
+  arabCountries.forEach(country => {
+    const option1 = document.createElement("option");
+    option1.value = country;
+    option1.textContent = country;
+
+    const option2 = document.createElement("option");
+    option2.value = country;
+    option2.textContent = country;
+
+    first.appendChild(option1);
+    second.appendChild(option2);
+  });
+
+  first.value = "سوريا";
+  second.value = "العراق";
 }
 
-function updateTimer() {
-    timerElement.textContent = timeLeft;
-    timerBar.style.width = (timeLeft / 15 * 100) + "%";
-
-    if (timeLeft <= 5) {
-        timerBar.style.background = "#e34e4e";
-        timerElement.style.color = "#e34e4e";
-    } else {
-        timerBar.style.background = "#22a783";
-        timerElement.style.color = "#176b58";
-    }
+function startRandomComparison() {
+  const shuffled = [...arabCountries].sort(() => Math.random() - 0.5);
+  selectedCountries = [shuffled[0], shuffled[1]];
+  showInstructions();
 }
 
-function checkAnswer(index, button) {
-    if (answered) return;
+function startCustomComparison() {
+  const first = document.getElementById("country1").value;
+  const second = document.getElementById("country2").value;
+  const warning = document.getElementById("same-country-warning");
 
-    answered = true;
-    clearInterval(timerInterval);
+  if (first === second) {
+    warning.classList.remove("hidden");
+    return;
+  }
 
-    const correctIndex = questions[currentQuestion].correct;
-
-    if (index === correctIndex) {
-        button.classList.add("correct");
-        score += 10;
-        document.getElementById("score").textContent = score;
-        messageElement.textContent = "✅ إجابة صحيحة! أحسنت.";
-
-        disableAnswers();
-        continueBtn.classList.remove("hidden");
-
-        if (currentQuestion === questions.length - 1) {
-            continueBtn.textContent = "إكمال المستوى";
-        } else {
-            continueBtn.textContent = "السؤال التالي";
-        }
-
-    } else {
-        button.classList.add("wrong");
-        messageElement.textContent = "❌ إجابة خاطئة! ستعيد المستوى.";
-        disableAnswers();
-        showRestart();
-    }
+  warning.classList.add("hidden");
+  selectedCountries = [first, second];
+  showInstructions();
 }
 
-function disableAnswers() {
-    document.querySelectorAll(".answer").forEach(button => {
-        button.disabled = true;
-    });
+function showInstructions() {
+  document.getElementById("comparison-names").textContent =
+    selectedCountries[0] + " × " + selectedCountries[1];
+
+  showScreen("instructions");
 }
 
-function showRestart() {
-    continueBtn.textContent = "إعادة المستوى";
-    continueBtn.classList.remove("hidden");
-    continueBtn.onclick = restartLevel;
+function beginComparison() {
+  document.getElementById("ready-names").textContent =
+    "الدولة الأولى: " + selectedCountries[0] +
+    " — الدولة الثانية: " + selectedCountries[1];
+
+  showScreen("comparison-ready");
 }
 
-continueBtn.onclick = nextQuestion;
-
-function nextQuestion() {
-    if (currentQuestion < questions.length - 1) {
-        currentQuestion++;
-        loadQuestion();
-    } else {
-        finishLevel();
-    }
-}
-
-function finishLevel() {
-    clearInterval(timerInterval);
-    gameArea.classList.add("hidden");
-    endArea.classList.remove("hidden");
-
-    document.getElementById("endTitle").textContent = "🎉 أكملت المستوى!";
-    document.getElementById("endMessage").textContent =
-        `حصلت على ${score} نقطة.`;
-}
-
-function restartLevel() {
-    clearInterval(timerInterval);
-
-    currentQuestion = 0;
-    score = 0;
-
-    document.getElementById("score").textContent = score;
-
-    endArea.classList.add("hidden");
-    gameArea.classList.remove("hidden");
-
-    continueBtn.onclick = nextQuestion;
-
-    loadQuestion();
-}
-
-loadQuestion();
+fillCountryLists();
 </script>
-
 </body>
 </html>
